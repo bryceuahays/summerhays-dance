@@ -1,0 +1,122 @@
+---
+// Two large photo cards, one per program: "For adults → Dance Again" and
+// "For teens → Teen Studio". The whole card is clickable.
+import type { CollectionEntry } from 'astro:content';
+import Photo from './Photo.astro';
+import SectionIntro from './SectionIntro.astro';
+import { url } from '../lib/site';
+
+interface Props {
+  heading: string;
+  /** In the order they should appear. */
+  programs: CollectionEntry<'programs'>[];
+}
+
+const { heading, programs } = Astro.props;
+---
+
+<div class="doors">
+  <SectionIntro heading={heading} />
+  <div class="doors__grid">
+    {
+      programs.map((p) => (
+        <article class="door reveal">
+          <div class="door__media">
+            <Photo photo={p.data.door.photo} ratio="4 / 3" sizes="(min-width: 768px) 50vw, 100vw" />
+          </div>
+          <div class="door__body">
+            <p class="eyebrow">{p.data.door.eyebrow}</p>
+            <h3 class="door__name">{p.data.name}</h3>
+            <p>{p.data.door.text}</p>
+            <a class="door__link" href={url(`/${p.id}`)}>
+              {p.data.door.linkLabel}
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .doors__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .door {
+    position: relative;
+    display: grid;
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    transition: border-color 150ms ease;
+  }
+
+  .door:hover {
+    border-color: var(--plum);
+  }
+
+  .door__media :global(.photo) {
+    border-radius: 0;
+  }
+
+  .door__body {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+  }
+
+  .door__name {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 400;
+    line-height: var(--leading-display);
+    text-transform: uppercase;
+  }
+
+  .door__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* Stretch the link over the whole card */
+  .door__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .door__link span {
+    transition: transform 150ms ease;
+  }
+
+  .door:hover .door__link span {
+    transform: translateX(4px);
+  }
+
+  .door:has(.door__link:focus-visible) {
+    outline: 3px solid var(--plum);
+    outline-offset: 3px;
+  }
+
+  .door__link:focus-visible {
+    outline: none;
+  }
+
+  @media (min-width: 768px) {
+    .doors__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .door__body {
+      padding: var(--space-4);
+    }
+  }
+</style>

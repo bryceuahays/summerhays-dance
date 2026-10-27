@@ -1,0 +1,54 @@
+---
+// Parties & Privates inquiry: name, email, phone, event type, preferred
+// dates, group size, notes. Labels from pages/parties.yaml; the form
+// service address from site.yaml.
+import type { CollectionEntry } from 'astro:content';
+import FormField from './FormField.astro';
+import ServiceForm from './ServiceForm.astro';
+import { getSite } from '../lib/site';
+
+interface Props {
+  form: CollectionEntry<'parties'>['data']['form'];
+}
+
+const { form } = Astro.props;
+const site = await getSite();
+---
+
+<ServiceForm
+  id="inquiry"
+  action={site.forms.inquiryAction}
+  submitLabel={form.submitLabel}
+  successMessage={form.successMessage}
+>
+  <div class="form-grid">
+    <FormField id="inquiry-name" name="name" field={form.name} autocomplete="name" required />
+    <FormField id="inquiry-email" name="email" type="email" field={form.email} autocomplete="email" required />
+    <FormField id="inquiry-phone" name="phone" type="tel" field={form.phone} autocomplete="tel" />
+    <FormField
+      id="inquiry-type"
+      name="eventType"
+      type="select"
+      field={form.eventType}
+      options={form.eventType.options}
+      required
+    />
+    <FormField id="inquiry-dates" name="preferredDates" field={form.dates} />
+    <FormField id="inquiry-size" name="groupSize" field={form.groupSize} />
+  </div>
+  <FormField id="inquiry-notes" name="notes" type="textarea" field={form.notes} />
+</ServiceForm>
+
+<style>
+  .form-grid {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 640px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+</style>

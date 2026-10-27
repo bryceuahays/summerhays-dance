@@ -1,0 +1,19 @@
+---
+// The eyebrow, heading and intro line that open most sections.
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  intro?: string;
+  center?: boolean;
+  /** Set for the heading's id so the section can be labelled by it. */
+  id?: string;
+}
+
+const { eyebrow, heading, intro, center = false, id } = Astro.props;
+---
+
+<div class:list={['section-intro', { 'section-intro--center': center }]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2 id={id}>{heading}</h2>
+  {intro && <p>{intro}</p>}
+</div>

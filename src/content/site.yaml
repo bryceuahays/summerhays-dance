@@ -61,6 +61,25 @@ signup:
 
 formErrorMessage: "Something went wrong and your message didn't send. Please try again, or email us directly."
 
+# Small interface wording. Most of it is only read aloud by screen readers.
+ui:
+  skipLink: Skip to content
+  menu: Menu
+  mainNavLabel: Main
+  footerNavLabel: More pages
+  photoLabel: "Photo:"
+  pauseVideo: Pause video
+  playVideo: Play video
+  bookClass: Book
+  honeypot: Leave this field empty
+  scheduleColumns:
+    day: Day
+    time: Time
+    className: Class
+    level: Level
+    location: Location
+    book: Book
+
 # Leave a link blank to hide that icon.
 social:
   instagram: ""

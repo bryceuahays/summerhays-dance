@@ -106,6 +106,26 @@ const site = defineCollection({
         successMessage: z.string(),
       }),
       formErrorMessage: z.string(),
+      /** Small interface wording: screen-reader labels, table headings, buttons. */
+      ui: z.object({
+        skipLink: z.string(),
+        menu: z.string(),
+        mainNavLabel: z.string(),
+        footerNavLabel: z.string(),
+        photoLabel: z.string(),
+        pauseVideo: z.string(),
+        playVideo: z.string(),
+        bookClass: z.string(),
+        honeypot: z.string(),
+        scheduleColumns: z.object({
+          day: z.string(),
+          time: z.string(),
+          className: z.string(),
+          level: z.string(),
+          location: z.string(),
+          book: z.string(),
+        }),
+      }),
       social: z.object({
         instagram: z.string().default(''),
         tiktok: z.string().default(''),

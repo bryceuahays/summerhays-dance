@@ -52,7 +52,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{site.ui.skipLink}</a>
     <IntroOfferBar site={site} />
     <Header site={site} overHero={overHero} />
     <main id="main" tabindex="-1" class:list={{ 'over-hero': overHero }}>

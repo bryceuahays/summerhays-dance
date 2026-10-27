@@ -1,0 +1,228 @@
+---
+// Full-bleed hero: photo or muted video loop behind the headline, subline and
+// two buttons. Video gets a visible pause button and never autoplays for
+// visitors who ask for reduced motion.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Photo from './Photo.astro';
+import { getSite, url } from '../lib/site';
+
+interface Props {
+  hero: {
+    eyebrow?: string;
+    headline: string;
+    subline: string;
+    secondary?: { label: string; href: string };
+    photo: { src?: ImageMetadata; alt: string };
+    video?: string;
+  };
+  /** Where the main button goes; pages pass bookAction(site, hero.primaryLabel). */
+  primary: { href: string; label: string };
+  /** Home gets the tall version, program pages a shorter one. */
+  size?: 'tall' | 'short';
+  /** h1 on real pages; the styleguide shows it as h2. */
+  as?: 'h1' | 'h2';
+}
+
+const { hero, primary, size = 'tall', as: Heading = 'h1' } = Astro.props;
+const site = await getSite();
+const poster = hero.photo.src ? (await getImage({ src: hero.photo.src, width: 1600 })).src : undefined;
+---
+
+<section class:list={['hero', `hero--${size}`, 'on-dark']}>
+  <div class="hero__media">
+    {
+      hero.video ? (
+        <video autoplay muted loop playsinline preload="metadata" poster={poster} data-hero-video>
+          <source src={url(hero.video)} type="video/mp4" />
+        </video>
+      ) : hero.photo.src ? (
+        <Photo photo={hero.photo} ratio="auto" loading="eager" />
+      ) : (
+        <p class="hero__placeholder">
+          {site.ui.photoLabel} {hero.photo.alt}
+        </p>
+      )
+    }
+  </div>
+
+  <div class="container hero__content">
+    {hero.eyebrow && <p class="eyebrow">{hero.eyebrow}</p>}
+    <Heading class="hero__title">{hero.headline}</Heading>
+    <p class="hero__subline">{hero.subline}</p>
+    <div class="btn-row">
+      <a class="btn" href={primary.href}>{primary.label}</a>
+      {
+        hero.secondary && (
+          <a class="btn btn--secondary" href={url(hero.secondary.href)}>
+            {hero.secondary.label}
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    hero.video && (
+      <button
+        class="hero__pause"
+        type="button"
+        data-video-toggle
+        data-pause-label={site.ui.pauseVideo}
+        data-play-label={site.ui.playVideo}
+      >
+        <span class="visually-hidden" data-video-label>
+          {site.ui.pauseVideo}
+        </span>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path class="hero__icon-pause" d="M7 5h3v14H7zM14 5h3v14h-3z" />
+          <path class="hero__icon-play" d="M8 5v14l11-7z" />
+        </svg>
+      </button>
+    )
+  }
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    background: var(--plum-deep);
+    color: var(--cream);
+    padding-block: var(--section-pad);
+  }
+
+  .hero--tall {
+    min-height: min(88svh, 820px);
+  }
+
+  .hero--short {
+    min-height: min(68svh, 620px);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% 10%, rgb(91 35 80 / 0.9), transparent 60%),
+      var(--plum-deep);
+  }
+
+  .hero__media video,
+  .hero__media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  /* Darken the bottom so cream text passes contrast on any photo */
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgb(31 26 30 / 0.82) 0%,
+      rgb(31 26 30 / 0.45) 45%,
+      rgb(31 26 30 / 0.25) 100%
+    );
+  }
+
+  .hero__placeholder {
+    position: absolute;
+    top: calc(var(--header-h) + var(--space-3));
+    right: var(--gutter);
+    z-index: 1;
+    max-width: 22rem;
+    padding: var(--space-1) var(--space-2);
+    border: 2px dashed rgb(250 246 241 / 0.45);
+    border-radius: var(--radius-card);
+    color: rgb(250 246 241 / 0.85);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .hero__content {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .hero .eyebrow {
+    color: var(--blush);
+  }
+
+  .hero__title {
+    max-width: 14ch;
+    font-family: var(--font-display);
+    font-size: var(--text-hero);
+    font-weight: 400;
+    line-height: var(--leading-display);
+    text-transform: uppercase;
+  }
+
+  .hero--short .hero__title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    max-width: 16ch;
+  }
+
+  .hero__subline {
+    max-width: 38ch;
+    font-size: 1.125rem;
+  }
+
+  .hero__pause {
+    position: absolute;
+    right: var(--gutter);
+    bottom: var(--space-3);
+    display: grid;
+    place-items: center;
+    width: var(--tap);
+    height: var(--tap);
+    border: 2px solid var(--cream);
+    border-radius: 50%;
+    background: rgb(31 26 30 / 0.5);
+    color: var(--cream);
+    cursor: pointer;
+  }
+
+  .hero__pause:hover {
+    background: var(--cream);
+    color: var(--plum-deep);
+  }
+
+  .hero__pause path {
+    fill: currentColor;
+  }
+
+  .hero__icon-play,
+  .hero__pause.is-paused .hero__icon-pause {
+    display: none;
+  }
+
+  .hero__pause.is-paused .hero__icon-play {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .hero__subline {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (max-width: 559px) {
+    /* Keep the placeholder label from colliding with the headline on phones */
+    .hero__placeholder {
+      left: var(--gutter);
+    }
+  }
+</style>

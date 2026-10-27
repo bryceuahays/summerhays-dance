@@ -1,0 +1,96 @@
+---
+// Questions and answers on native <details>/<summary>: keyboard and screen
+// reader support comes free, and it works without JavaScript.
+import { render, type CollectionEntry } from 'astro:content';
+import SectionIntro from './SectionIntro.astro';
+
+interface Props {
+  heading?: string;
+  faqs: CollectionEntry<'faqs'>[];
+}
+
+const { heading, faqs } = Astro.props;
+const answers = await Promise.all(faqs.map(async (f) => (await render(f)).Content));
+---
+
+<div class="faq">
+  {heading && <SectionIntro heading={heading} />}
+  <div class="faq__list">
+    {
+      faqs.map((f, i) => {
+        const Answer = answers[i]!;
+        return (
+          <details class="faq__item">
+            <summary>
+              <span>{f.data.question}</span>
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path class="faq__h" d="M5 12h14" />
+                <path class="faq__v" d="M12 5v14" />
+              </svg>
+            </summary>
+            <div class="faq__answer">
+              <Answer />
+            </div>
+          </details>
+        );
+      })
+    }
+  </div>
+</div>
+
+<style>
+  .faq__list {
+    max-width: 52rem;
+    border-top: 1px solid var(--sand);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--sand);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 64px;
+    padding-block: var(--space-2);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:hover {
+    color: var(--plum);
+  }
+
+  summary svg {
+    flex: none;
+    fill: none;
+    stroke: var(--plum);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  .faq__v {
+    transition: opacity 150ms ease;
+  }
+
+  details[open] .faq__v {
+    opacity: 0;
+  }
+
+  .faq__answer {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 62ch;
+    padding-bottom: var(--space-3);
+    color: var(--muted);
+  }
+</style>

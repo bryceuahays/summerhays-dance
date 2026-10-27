@@ -1,0 +1,87 @@
+---
+// Static grid of 2-3 quotes with name and program. No carousel. Renders
+// nothing until at least one quote is published.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import SectionIntro from './SectionIntro.astro';
+
+interface Props {
+  heading: string;
+  quotes: CollectionEntry<'testimonials'>[];
+}
+
+const { heading, quotes } = Astro.props;
+const programs = new Map((await getCollection('programs')).map((p) => [p.id, p.data.name]));
+---
+
+{
+  quotes.length > 0 && (
+    <div>
+      <SectionIntro heading={heading} />
+      <ul class="quotes" role="list">
+        {quotes.map((q) => (
+          <li class="reveal">
+            <figure class="quote">
+              <svg class="quote__mark" viewBox="0 0 48 36" width="40" height="30" aria-hidden="true">
+                <path d="M0 36V22C0 9 7 2 19 0l2 6c-7 2-10 6-10 12h9v18H0zm27 0V22C27 9 34 2 46 0l2 6c-7 2-10 6-10 12h9v18H27z" />
+              </svg>
+              <blockquote>
+                <p>{q.data.quote}</p>
+              </blockquote>
+              <figcaption>
+                <span class="quote__name">{q.data.name}</span>
+                <span class="quote__program">{programs.get(q.data.program.id)}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .quote {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-4) var(--space-3);
+    background: var(--cream);
+    border-radius: var(--radius-card);
+  }
+
+  .quote__mark {
+    fill: var(--plum);
+  }
+
+  blockquote {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  figcaption {
+    display: grid;
+    margin-top: auto;
+  }
+
+  .quote__name {
+    font-weight: 700;
+  }
+
+  .quote__program {
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--plum);
+  }
+</style>

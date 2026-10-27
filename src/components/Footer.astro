@@ -18,7 +18,7 @@ const year = new Date().getFullYear();
       <SocialLinks social={site.social} />
     </div>
 
-    <nav class="site-footer__links" aria-label="Footer">
+    <nav class="site-footer__links" aria-label={site.ui.footerNavLabel}>
       <ul role="list">
         {
           site.footerLinks.map((item) => (

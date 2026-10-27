@@ -17,7 +17,7 @@ const isCurrent = (href: string) => url(href).replace(/\/$/, '') === current;
   <div class="container site-header__inner">
     <a class="site-header__logo" href={url('/')}>{site.name}</a>
 
-    <nav class="site-nav" id="site-nav" aria-label="Main">
+    <nav class="site-nav" id="site-nav" aria-label={site.ui.mainNavLabel}>
       <ul role="list">
         {
           site.nav.map((item) => (
@@ -40,7 +40,7 @@ const isCurrent = (href: string) => url(href).replace(/\/$/, '') === current;
       aria-controls="site-nav"
       data-menu-toggle
     >
-      <span class="visually-hidden">Menu</span>
+      <span class="visually-hidden">{site.ui.menu}</span>
       <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
         <path class="menu-icon__open" d="M3 6h18M3 12h18M3 18h18"></path>
         <path class="menu-icon__close" d="M5 5l14 14M19 5L5 19"></path>

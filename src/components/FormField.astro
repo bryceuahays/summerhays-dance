@@ -1,0 +1,96 @@
+---
+// One labeled form field. Labels and hints come from the page's content file.
+interface Props {
+  /** Unique on the page, e.g. "inquiry-email". */
+  id: string;
+  name: string;
+  field: { label: string; hint?: string };
+  type?: 'text' | 'email' | 'tel' | 'textarea' | 'select';
+  options?: string[];
+  required?: boolean;
+  autocomplete?: string;
+}
+
+const { id, name, field, type = 'text', options = [], required = false, autocomplete } = Astro.props;
+const hintId = field.hint ? `${id}-hint` : undefined;
+---
+
+<div class="field">
+  <label for={id}>{field.label}</label>
+  {field.hint && <p class="field__hint" id={hintId}>{field.hint}</p>}
+  {
+    type === 'textarea' ? (
+      <textarea id={id} name={name} rows="5" required={required} aria-describedby={hintId} />
+    ) : type === 'select' ? (
+      <select id={id} name={name} required={required} aria-describedby={hintId}>
+        {options.map((option) => (
+          <option>{option}</option>
+        ))}
+      </select>
+    ) : (
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        autocomplete={autocomplete}
+        aria-describedby={hintId}
+      />
+    )
+  }
+</div>
+
+<style>
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  label {
+    font-weight: 700;
+  }
+
+  .field__hint {
+    margin-top: -4px;
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: var(--tap);
+    padding: 10px 16px;
+    border: 2px solid var(--sand);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  select {
+    appearance: none;
+    padding-right: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%235B2350' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 20px;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: color-mix(in srgb, var(--plum) 40%, var(--sand));
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--plum);
+    outline-offset: 1px;
+  }
+</style>

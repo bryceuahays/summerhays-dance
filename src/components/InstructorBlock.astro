@@ -1,0 +1,111 @@
+---
+// Portrait, short bio and credential list. Home uses the short version with
+// a link to About; About adds the credentials and her full story in the slot.
+import type { ImageMetadata } from 'astro';
+import Photo from './Photo.astro';
+import { url } from '../lib/site';
+
+interface Props {
+  portrait: { src?: ImageMetadata; alt: string };
+  heading: string;
+  eyebrow?: string;
+  bio: string;
+  credentials?: { heading: string; items: string[] };
+  link?: { href: string; label: string };
+  /** h1 on the About page, h2 everywhere else. */
+  as?: 'h1' | 'h2';
+}
+
+const { portrait, heading, eyebrow, bio, credentials, link, as: Heading = 'h2' } = Astro.props;
+---
+
+<div class="instructor">
+  <div class="instructor__portrait reveal">
+    <Photo photo={portrait} ratio="4 / 5" sizes="(min-width: 768px) 45vw, 100vw" />
+  </div>
+
+  <div class="instructor__body">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <Heading class="instructor__heading">{heading}</Heading>
+    <p class="instructor__bio">{bio}</p>
+    <slot />
+    {
+      credentials && credentials.items.length > 0 && (
+        <div class="instructor__credentials">
+          <h3>{credentials.heading}</h3>
+          <ul role="list">
+            {credentials.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+    {
+      link && (
+        <a class="btn btn--secondary instructor__link" href={url(link.href)}>
+          {link.label}
+        </a>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .instructor {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .instructor__body {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .instructor__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 400;
+    line-height: var(--leading-display);
+    text-transform: uppercase;
+  }
+
+  .instructor__bio {
+    max-width: 40ch;
+    font-size: 1.125em;
+  }
+
+  .instructor__body :global(p) {
+    max-width: 62ch;
+  }
+
+  .instructor__credentials {
+    display: grid;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .instructor__credentials ul {
+    display: grid;
+    padding: 0;
+    list-style: none;
+  }
+
+  .instructor__credentials li {
+    padding-block: 12px;
+    border-top: 1px solid var(--sand);
+  }
+
+  .instructor__credentials li:last-child {
+    border-bottom: 1px solid var(--sand);
+  }
+
+  @media (min-width: 768px) {
+    .instructor {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

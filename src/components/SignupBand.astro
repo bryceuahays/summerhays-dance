@@ -1,0 +1,62 @@
+---
+// "Get first dibs on new sessions": heading and line from site.yaml beside
+// the signup form, on a blush band.
+import SignupForm from './SignupForm.astro';
+import { getSite } from '../lib/site';
+
+interface Props {
+  /** Unique on the page. */
+  id?: string;
+}
+
+const { id = 'band' } = Astro.props;
+const site = await getSite();
+---
+
+<section class="section section--blush" aria-labelledby={`signup-${id}-heading`}>
+  <div class="container signup-band">
+    <div class="signup-band__intro">
+      <h2 id={`signup-${id}-heading`}>{site.signup.heading}</h2>
+      <p>{site.signup.text}</p>
+    </div>
+    <div class="signup-band__card">
+      <SignupForm id={id} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .signup-band {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .signup-band__intro {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .signup-band__intro p {
+    max-width: 38ch;
+    font-size: 1.125em;
+    color: var(--muted);
+  }
+
+  .signup-band__card {
+    padding: var(--space-3);
+    background: var(--cream);
+    border-radius: var(--radius-card);
+  }
+
+  @media (min-width: 900px) {
+    .signup-band {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--space-8);
+    }
+
+    .signup-band__card {
+      padding: var(--space-4);
+    }
+  }
+</style>

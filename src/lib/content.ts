@@ -63,6 +63,15 @@ export async function getTestimonials() {
   return quotes.sort((a, b) => a.data.order - b.data.order);
 }
 
+/** "7:00 PM" + "8:00 PM" → "7:00–8:00 PM"; keeps both halves when AM/PM differ. */
+export function formatTimeRange(start: string, end: string) {
+  const half = (t: string) => t.trim().slice(-2).toUpperCase();
+  const clock = (t: string) => t.trim().slice(0, -2).trim();
+  return half(start) === half(end)
+    ? `${clock(start)}–${clock(end)} ${half(end)}`
+    : `${clock(start)} ${half(start)}–${clock(end)} ${half(end)}`;
+}
+
 export function formatPrice(price: number) {
   return `$${Number.isInteger(price) ? price : price.toFixed(2)}`;
 }

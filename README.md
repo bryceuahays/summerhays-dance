@@ -2,7 +2,7 @@
 
 Marketing site for Summerhays Dance: hip hop, jazz and contemporary for teens and adults in Utah. Built with [Astro](https://astro.build) as a plain static site and deployed to GitHub Pages. The full spec is in [BRIEF.md](BRIEF.md).
 
-> Status: pass 2 of 6 (content layer). Brielle's "How to edit your site" guide is added in pass 6.
+> Status: pass 3 of 6 (components; review them at `/styleguide`). Brielle's "How to edit your site" guide is added in pass 6.
 
 ## Run it on your computer
 

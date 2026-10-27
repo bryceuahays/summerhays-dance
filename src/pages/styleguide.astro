@@ -1,273 +1,421 @@
 ---
-// Hidden review page (noindex, left out of the sitemap). Pass 2 lists every
-// piece of content so the data layer can be checked; pass 3 turns it into the
-// design-system styleguide with every component rendered once.
-import { getCollection, render } from 'astro:content';
+// Hidden review page (noindex, left out of the sitemap): every design-system
+// component rendered once with real content, for review before the pages are
+// assembled. The intro-offer bar, header and footer frame the page itself.
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { getSite } from '../lib/site';
-import {
-  formatPrice,
-  getFaqs,
-  getPage,
-  getPricing,
-  getSchedule,
-} from '../lib/content';
+import Hero from '../components/Hero.astro';
+import TwoDoors from '../components/TwoDoors.astro';
+import LevelPicker from '../components/LevelPicker.astro';
+import StyleTiles from '../components/StyleTiles.astro';
+import PointGrid from '../components/PointGrid.astro';
+import Timeline from '../components/Timeline.astro';
+import ScheduleTable from '../components/ScheduleTable.astro';
+import PricingCards from '../components/PricingCards.astro';
+import Testimonials from '../components/Testimonials.astro';
+import InstructorBlock from '../components/InstructorBlock.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import SignupBand from '../components/SignupBand.astro';
+import SignupForm from '../components/SignupForm.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import ContactForm from '../components/ContactForm.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Photo from '../components/Photo.astro';
+import { bookAction, getSite, url } from '../lib/site';
+import { getFaqs, getPage, getPricing, getProgram, getSchedule } from '../lib/content';
 
 const site = await getSite();
-const programs = await getCollection('programs');
-const schedule = await getSchedule();
+const home = (await getPage('home')).data;
+const about = (await getPage('about')).data;
+const firstClass = (await getPage('firstClass')).data;
+const parties = (await getPage('parties')).data;
+const contact = (await getPage('contact')).data;
+const danceAgain = await getProgram('dance-again');
+const teens = await getProgram('teens');
+const adultClasses = await getSchedule('dance-again');
 const classPrices = await getPricing('classes');
 const partyPrices = await getPricing('parties');
-const faqs = await getFaqs();
-const testimonials = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
-const faqBodies = await Promise.all(faqs.map(async (f) => (await render(f)).Content));
+const adultFaqs = await getFaqs(danceAgain.data.faq?.topics);
+// Unpublished placeholder quotes, shown here only so the layout can be reviewed.
+const sampleQuotes = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
 
-const pages = await Promise.all(
-  (
-    [
-      'home',
-      'schedulePage',
-      'firstClass',
-      'about',
-      'parties',
-      'waitlist',
-      'contact',
-      'policies',
-      'notFound',
-    ] as const
-  ).map(async (c) => ({ collection: c, entry: await getPage(c) })),
-);
+const swatches = [
+  ['--cream', '#FAF6F1', 'Page background'],
+  ['--ink', '#1F1A1E', 'Body text, headlines'],
+  ['--muted', '#6B6168', 'Secondary text'],
+  ['--plum', '#5B2350', 'Buttons, links, highlights'],
+  ['--plum-deep', '#3D1636', 'Hover, dark bands, offer bar'],
+  ['--blush', '#F1E6EE', 'Tinted sections'],
+  ['--sand', '#EADFD2', 'Alternate sections, borders'],
+];
+
+const parts = [
+  ['tokens', 'Color, type and buttons'],
+  ['hero', 'Hero'],
+  ['doors', 'Two doors'],
+  ['levels', 'Level picker'],
+  ['styles', 'Style tiles'],
+  ['points', 'Point lists'],
+  ['timeline', 'Timeline'],
+  ['schedule', 'Schedule preview'],
+  ['pricing', 'Pricing cards'],
+  ['testimonials', 'Testimonials'],
+  ['instructor', 'Instructor block'],
+  ['faq', 'FAQ accordion'],
+  ['signup', 'Email signup'],
+  ['forms', 'Inquiry and contact forms'],
+  ['cta', 'CTA band'],
+];
+const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStart(2, '0');
 ---
 
 <Base title="Styleguide" noindex>
   <section class="section">
     <div class="container stack">
       <p class="eyebrow">Internal · not linked from the site</p>
-      <h1>Content check</h1>
+      <h1>Styleguide</h1>
       <p class="lede">
-        Everything below comes from <code>src/content</code>. Prelaunch mode is{' '}
-        <strong>{site.prelaunch ? 'on' : 'off'}</strong>.
+        Every component, built once from <code>src/content</code>. The offer bar, header and footer
+        frame this page. Prelaunch mode is <strong>{site.prelaunch ? 'on' : 'off'}</strong>, so Book
+        buttons currently read “{bookAction(site).label}”.
       </p>
+      <nav aria-label="Components">
+        <ol class="sg-toc">
+          {
+            parts.map(([id, label]) => (
+              <li>
+                <a href={`#${id}`}>{label}</a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
     </div>
   </section>
 
-  <section class="section section--blush">
+  <!-- Tokens -->
+  <section class="section section--sand" id="tokens">
     <div class="container stack">
-      <h2>Programs ({programs.length})</h2>
-      {
-        programs.map((p) => (
-          <article class="sg-card">
-            <p class="eyebrow">
-              {p.data.door.eyebrow} · {p.data.audience}
-            </p>
-            <h3>{p.data.name}</h3>
-            <p>
-              <strong>{p.data.hero.headline}</strong> {p.data.hero.subline}
-            </p>
-            <p class="sg-meta">
-              Sections:{' '}
-              {Object.keys(p.data)
-                .filter((k) => !['title', 'description', 'name', 'audience'].includes(k))
-                .join(', ')}
-            </p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container stack">
-      <h2>Schedule ({schedule.length} classes)</h2>
-      <div class="sg-scroll" tabindex="0" role="region" aria-label="Schedule table">
-        <table class="sg-table">
-          <thead>
-            <tr>
-              <th scope="col">Day</th>
-              <th scope="col">Time</th>
-              <th scope="col">Class</th>
-              <th scope="col">Level</th>
-              <th scope="col">Program</th>
-              <th scope="col">Location</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              schedule.map((c) => (
-                <tr>
-                  <td>{c.data.day}</td>
-                  <td>
-                    {c.data.startTime}–{c.data.endTime}
-                  </td>
-                  <td>{c.data.className}</td>
-                  <td>{c.data.level}</td>
-                  <td>{c.data.program.id}</td>
-                  <td>{c.data.location}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--sand">
-    <div class="container stack">
-      <h2>Pricing ({classPrices.length + partyPrices.length} cards)</h2>
-      {
-        [
-          ['Classes', classPrices],
-          ['Parties & privates', partyPrices],
-        ].map(([label, cards]) => (
-          <>
-            <h3>{label as string}</h3>
-            <div class="sg-grid">
-              {(cards as typeof classPrices).map((p) => (
-                <article class:list={['sg-card', { 'sg-card--highlight': p.data.highlight }]}>
-                  {p.data.badge && <p class="eyebrow">{p.data.badge}</p>}
-                  <h4>{p.data.name}</h4>
-                  <p class="sg-price">
-                    {p.data.pricePrefix} {formatPrice(p.data.price)} <span>{p.data.priceSuffix}</span>
-                  </p>
-                  <p>{p.data.summary}</p>
-                  <ul>
-                    {p.data.includes.map((i) => (
-                      <li>{i}</li>
-                    ))}
-                  </ul>
-                  <p class="sg-meta">Program: {p.data.program?.id ?? 'all'}</p>
-                </article>
-              ))}
-            </div>
-          </>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container stack">
-      <h2>FAQs ({faqs.length})</h2>
-      {
-        faqs.map((f, i) => {
-          const Answer = faqBodies[i]!;
-          return (
-            <details class="sg-faq">
-              <summary>{f.data.question}</summary>
-              <Answer />
-              <p class="sg-meta">Topics: {f.data.topics.join(', ')}</p>
-            </details>
-          );
-        })
-      }
-    </div>
-  </section>
-
-  <section class="section section--blush">
-    <div class="container stack">
-      <h2>Testimonials ({testimonials.length})</h2>
-      <div class="sg-grid">
+      <p class="sg-label">{n('tokens')} · Color, type and buttons</p>
+      <ul class="sg-swatches" role="list">
         {
-          testimonials.map((t) => (
-            <figure class="sg-card">
-              <blockquote>{t.data.quote}</blockquote>
-              <figcaption>
-                {t.data.name} · {t.data.program.id} ·{' '}
-                <strong>{t.data.published ? 'published' : 'hidden'}</strong>
-              </figcaption>
-            </figure>
+          swatches.map(([token, hex, use]) => (
+            <li>
+              <span class="sg-swatch" style={{ background: `var(${token})` }} />
+              <code>{token}</code>
+              <span>{hex}</span>
+              <span class="sg-muted">{use}</span>
+            </li>
           ))
         }
+      </ul>
+
+      <div class="sg-type">
+        <p class="eyebrow">Eyebrow · DM Sans 600, 13px</p>
+        <p class="display sg-hero-size">Hero · Anton</p>
+        <h2>Heading 2 · Anton</h2>
+        <h3>Heading 3 · DM Sans 700</h3>
+        <p>
+          Body · DM Sans 400 at 17px on phones and 18px on desktop, line-height 1.6. <a href="#tokens"
+            >Links are plum</a
+          > and underlined.
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <a class="btn" href="#tokens">Primary button</a>
+        <a class="btn btn--secondary" href="#tokens">Secondary button</a>
+      </div>
+      <div class="sg-dark on-dark btn-row">
+        <a class="btn" href="#tokens">Primary on dark</a>
+        <a class="btn btn--secondary" href="#tokens">Secondary on dark</a>
+      </div>
+
+      <div class="sg-photo">
+        <Photo photo={{ alt: 'adults mid-turn, laughing' }} ratio="16 / 9" />
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container stack">
-      <h2>Page copy ({pages.length} files)</h2>
-      <div class="sg-grid">
-        {
-          pages.map(({ collection, entry }) => (
-            <article class="sg-card">
-              <p class="eyebrow">{collection}</p>
-              <h3>{'title' in entry.data ? entry.data.title : site.name}</h3>
-              <p>{entry.data.description}</p>
-            </article>
-          ))
-        }
+  <!-- Hero -->
+  <div id="hero">
+    <div class="container sg-bar"><p class="sg-label">{n('hero')} · Hero, home version (tall)</p></div>
+    <Hero hero={home.hero} primary={bookAction(site, home.hero.primaryLabel)} as="h2" />
+    <div class="container sg-bar">
+      <p class="sg-label">Hero, program version (short)</p>
+    </div>
+    <Hero
+      hero={danceAgain.data.hero}
+      primary={bookAction(site, danceAgain.data.hero.primaryLabel)}
+      size="short"
+      as="h2"
+    />
+  </div>
+
+  <!-- Two doors -->
+  <section class="section" id="doors">
+    <div class="container">
+      <p class="sg-label">{n('doors')} · Two doors</p>
+      <TwoDoors heading={home.doors.heading} programs={[danceAgain, teens]} />
+    </div>
+  </section>
+
+  <!-- Level picker -->
+  {
+    danceAgain.data.levels && (
+      <section class="section section--blush" id="levels">
+        <div class="container">
+          <p class="sg-label">{n('levels')} · Level picker</p>
+          <LevelPicker levels={danceAgain.data.levels} href="#schedule" />
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Style tiles -->
+  <section class="section" id="styles">
+    <div class="container">
+      <p class="sg-label">{n('styles')} · Style tiles</p>
+      <StyleTiles heading={home.styles.heading} items={home.styles.items} />
+    </div>
+  </section>
+
+  <!-- Point lists -->
+  <section class="section section--sand" id="points">
+    <div class="container sg-stack-lg">
+      <p class="sg-label">{n('points')} · Point lists: steps, cards, list</p>
+      <PointGrid list={home.howItWorks} variant="steps" />
+      {danceAgain.data.whoFor && <PointGrid list={danceAgain.data.whoFor} variant="cards" />}
+      <PointGrid list={firstClass.wear} variant="list" />
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section" id="timeline">
+    <div class="container">
+      <p class="sg-label">{n('timeline')} · Timeline</p>
+      <Timeline timeline={firstClass.timeline} />
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  <section class="section section--blush" id="schedule">
+    <div class="container sg-stack-lg">
+      <p class="sg-label">{n('schedule')} · Schedule preview, booking mode</p>
+      <div>
+        <h2 class="sg-h">{danceAgain.data.schedule.heading}</h2>
+        <ScheduleTable classes={adultClasses} caption={danceAgain.data.schedule.heading} prelaunch={false} />
       </div>
+      <p class="sg-label">Prelaunch mode (Book column hidden)</p>
+      <ScheduleTable classes={adultClasses} caption={danceAgain.data.schedule.heading} prelaunch />
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section" id="pricing">
+    <div class="container sg-stack-lg">
+      <p class="sg-label">{n('pricing')} · Pricing cards, classes</p>
+      <PricingCards cards={classPrices} action={bookAction(site)} />
+      <p class="sg-label">Parties and privates</p>
+      <PricingCards cards={partyPrices} action={{ href: '#forms', label: parties.form.submitLabel }} />
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section section--blush" id="testimonials">
+    <div class="container">
+      <p class="sg-label">
+        {n('testimonials')} · Testimonials (placeholder quotes; hidden on real pages until published)
+      </p>
+      <Testimonials heading={home.testimonials.heading} quotes={sampleQuotes} />
+    </div>
+  </section>
+
+  <!-- Instructor -->
+  <section class="section" id="instructor">
+    <div class="container sg-stack-lg">
+      <p class="sg-label">{n('instructor')} · Instructor block, home version</p>
+      <InstructorBlock
+        portrait={about.portrait}
+        eyebrow={home.meetInstructor.eyebrow}
+        heading={home.meetInstructor.heading}
+        bio={about.shortBio}
+        link={{ href: '/about', label: home.meetInstructor.linkLabel }}
+      />
+      <p class="sg-label">About version, with credentials</p>
+      <InstructorBlock
+        portrait={about.portrait}
+        heading={about.heading}
+        bio={about.shortBio}
+        credentials={about.credentials}
+      />
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section--sand" id="faq">
+    <div class="container">
+      <p class="sg-label">{n('faq')} · FAQ accordion (Dance Again topics)</p>
+      {danceAgain.data.faq && <FaqAccordion heading={danceAgain.data.faq.heading} faqs={adultFaqs} />}
+    </div>
+  </section>
+
+  <!-- Signup -->
+  <div id="signup">
+    <div class="container sg-bar"><p class="sg-label">{n('signup')} · Email signup band</p></div>
+    <SignupBand id="sg-band" />
+    <section class="section">
+      <div class="container sg-narrow">
+        <p class="sg-label">Signup form on its own (waitlist page)</p>
+        <SignupForm id="sg-solo" />
+      </div>
+    </section>
+  </div>
+
+  <!-- Forms -->
+  <section class="section section--blush" id="forms">
+    <div class="container sg-forms">
+      <div>
+        <p class="sg-label">{n('forms')} · Inquiry form (Parties)</p>
+        <h2 class="sg-h">{parties.form.heading}</h2>
+        <div class="sg-card"><InquiryForm form={parties.form} /></div>
+      </div>
+      <div>
+        <p class="sg-label">Contact form</p>
+        <h2 class="sg-h">{contact.form.heading}</h2>
+        <div class="sg-card"><ContactForm form={contact.form} /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div id="cta">
+    <div class="container sg-bar"><p class="sg-label">{n('cta')} · CTA band</p></div>
+    <CtaBand cta={danceAgain.data.cta} action={bookAction(site, danceAgain.data.cta.buttonLabel)} />
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <p class="sg-label">Footer below · <a href={url('/')}>Back to home</a></p>
     </div>
   </section>
 </Base>
 
 <style>
-  .sg-card {
-    padding: var(--space-3);
-    background: var(--cream);
+  .sg-label {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    padding: 4px 12px;
+    border: 1px dashed var(--muted);
+    border-radius: var(--radius-pill);
+    font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+
+  .sg-bar {
+    padding-top: var(--space-6);
+  }
+
+  .sg-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+    counter-reset: sg;
+  }
+
+  .sg-toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
     border: 1px solid var(--sand);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-small);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .sg-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+    gap: var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .sg-swatches li {
+    display: grid;
+    gap: 2px;
+    font-size: var(--text-small);
+  }
+
+  .sg-swatch {
+    height: 72px;
+    margin-bottom: var(--space-1);
+    border: 1px solid rgb(31 26 30 / 0.12);
+    border-radius: 12px;
+  }
+
+  .sg-muted {
+    color: var(--muted);
+  }
+
+  .sg-type {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-4);
+  }
+
+  .sg-hero-size {
+    font-size: var(--text-hero);
+  }
+
+  .sg-dark {
+    padding: var(--space-3);
+    background: var(--plum-deep);
     border-radius: var(--radius-card);
   }
 
-  .sg-card > * + * {
-    margin-top: var(--space-1);
+  .sg-photo {
+    max-width: 560px;
   }
 
-  .sg-card--highlight {
-    border: 2px solid var(--plum);
+  .sg-stack-lg > :global(* + *) {
+    margin-top: var(--space-8);
   }
 
-  .sg-grid {
+  .sg-h {
+    margin-bottom: var(--space-3);
+  }
+
+  .sg-narrow {
+    max-width: 720px;
+  }
+
+  .sg-forms {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-    gap: var(--space-2);
+    gap: var(--space-8);
   }
 
-  .sg-meta {
-    color: var(--muted);
-    font-size: var(--text-small);
+  .sg-card {
+    padding: var(--space-3);
+    background: var(--cream);
+    border-radius: var(--radius-card);
   }
 
-  .sg-price {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    line-height: 1;
+  @media (min-width: 768px) {
+    .sg-card {
+      padding: var(--space-4);
+    }
   }
 
-  .sg-price span {
-    font-family: var(--font-body);
-    font-size: var(--text-small);
-    color: var(--muted);
-  }
-
-  .sg-scroll {
-    overflow-x: auto;
-  }
-
-  .sg-table {
-    width: 100%;
-    min-width: 640px;
-    border-collapse: collapse;
-    font-size: var(--text-small);
-  }
-
-  .sg-table th,
-  .sg-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--sand);
-    text-align: left;
-  }
-
-  .sg-faq {
-    padding: var(--space-2) 0;
-    border-bottom: 1px solid var(--sand);
-  }
-
-  .sg-faq summary {
-    font-weight: 700;
-    cursor: pointer;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
+  @media (min-width: 1024px) {
+    .sg-forms {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: start;
+    }
   }
 </style>

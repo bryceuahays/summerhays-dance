@@ -1,0 +1,114 @@
+---
+// Three plain-language level cards ("I danced years ago and miss it"), each
+// linking to where that cohort's classes are listed.
+import SectionIntro from './SectionIntro.astro';
+import { url } from '../lib/site';
+
+interface Props {
+  levels: {
+    heading: string;
+    intro?: string;
+    items: { name: string; prompt: string; text: string }[];
+  };
+  /** Where each card links, e.g. "#schedule" on the program page. */
+  href: string;
+}
+
+const { levels, href } = Astro.props;
+---
+
+<div class="levels">
+  <SectionIntro heading={levels.heading} intro={levels.intro} />
+  <ol class="levels__grid" role="list">
+    {
+      levels.items.map((level, i) => (
+        <li class="level reveal">
+          <span class="level__step" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <p class="level__prompt">“{level.prompt}”</p>
+          <p class="level__text">{level.text}</p>
+          <a class="level__link" href={url(href)}>
+            {level.name}
+            <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .levels__grid {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .level {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-3) var(--space-3);
+    background: var(--cream);
+    border: 2px solid var(--sand);
+    border-radius: var(--radius-card);
+    transition: border-color 150ms ease;
+  }
+
+  .level:hover {
+    border-color: var(--plum);
+  }
+
+  .level:has(.level__link:focus-visible) {
+    outline: 3px solid var(--plum);
+    outline-offset: 3px;
+  }
+
+  .level__step {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--plum);
+  }
+
+  .level__prompt {
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .level__text {
+    color: var(--muted);
+  }
+
+  .level__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--tap);
+    margin-top: auto;
+    font-size: var(--text-label);
+    font-weight: 700;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .level__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .level__link:focus-visible {
+    outline: none;
+  }
+
+  @media (min-width: 900px) {
+    .levels__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

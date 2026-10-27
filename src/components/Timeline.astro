@@ -1,0 +1,62 @@
+---
+// "What to expect" minute by minute on the First Class page.
+import SectionIntro from './SectionIntro.astro';
+
+interface Props {
+  timeline: {
+    heading: string;
+    items: { time: string; title: string; text: string }[];
+  };
+}
+
+const { timeline } = Astro.props;
+---
+
+<div>
+  <SectionIntro heading={timeline.heading} />
+  <ol class="timeline" role="list">
+    {
+      timeline.items.map((item) => (
+        <li class="timeline__item reveal">
+          <p class="eyebrow">{item.time}</p>
+          <h3>{item.title}</h3>
+          <p class="timeline__text">{item.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .timeline {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 44rem;
+    padding: 0 0 0 var(--space-4);
+    list-style: none;
+    border-left: 2px solid var(--sand);
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  /* Plum dot on the line */
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: calc(var(--space-4) * -1 - 9px);
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--cream);
+    border-radius: 50%;
+    background: var(--plum);
+  }
+
+  .timeline__text {
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,174 @@
+---
+// Price cards from src/content/pricing. The highlighted card (the intro
+// offer) is plum so it reads first.
+import type { CollectionEntry } from 'astro:content';
+import Photo from './Photo.astro';
+import { formatPrice } from '../lib/content';
+
+interface Props {
+  cards: CollectionEntry<'pricing'>[];
+  /** Optional button on every card, e.g. Book or Send an inquiry. */
+  action?: { href: string; label: string };
+}
+
+const { cards, action } = Astro.props;
+---
+
+<ul class="prices" role="list">
+  {
+    cards.map((card) => (
+      <li class:list={['price reveal', { 'price--highlight on-dark': card.data.highlight }]}>
+        {card.data.photo && (
+          <div class="price__media">
+            <Photo photo={card.data.photo} ratio="3 / 2" sizes="(min-width: 768px) 33vw, 100vw" />
+          </div>
+        )}
+        <div class="price__body">
+          {card.data.badge && <p class="price__badge">{card.data.badge}</p>}
+          <h3 class="price__name">{card.data.name}</h3>
+          <p class="price__amount">
+            {card.data.pricePrefix && <span class="price__unit">{card.data.pricePrefix} </span>}
+            <span class="price__number">{formatPrice(card.data.price)}</span>
+            {card.data.priceSuffix && <span class="price__unit"> {card.data.priceSuffix}</span>}
+          </p>
+          <p class="price__summary">{card.data.summary}</p>
+          {card.data.includes.length > 0 && (
+            <ul class="price__includes" role="list">
+              {card.data.includes.map((item) => (
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M5 12.5l4.5 4.5L19 7.5" />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+          {action && (
+            <a class:list={['btn price__action', { 'btn--secondary': !card.data.highlight }]} href={action.href}>
+              {action.label}
+            </a>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .prices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .price {
+    display: flex;
+    flex-direction: column;
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .price--highlight {
+    background: var(--plum);
+    border-color: var(--plum);
+    color: var(--cream);
+  }
+
+  .price__media :global(.photo) {
+    border-radius: 0;
+  }
+
+  .price__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+    padding: var(--space-3);
+  }
+
+  .price__badge {
+    align-self: flex-start;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--plum);
+    color: var(--cream);
+    font-size: var(--text-label);
+    font-weight: 700;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .price--highlight .price__badge {
+    background: var(--cream);
+    color: var(--plum-deep);
+  }
+
+  .price__name {
+    font-size: 1.125rem;
+  }
+
+  .price__amount {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 6px;
+  }
+
+  .price__number {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .price__unit {
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+
+  .price--highlight .price__unit,
+  .price--highlight .price__summary {
+    color: var(--blush);
+  }
+
+  .price__summary {
+    color: var(--muted);
+  }
+
+  .price__includes {
+    display: grid;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-small);
+  }
+
+  .price__includes li {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .price__includes svg {
+    flex: none;
+    margin-top: 3px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--plum);
+  }
+
+  .price--highlight .price__includes svg {
+    color: var(--cream);
+  }
+
+  .price__action {
+    margin-top: auto;
+    align-self: stretch;
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+// A heading with short titled points. One component covers "How it works"
+// (numbered steps), "Who it's for" (cards) and lists like "What to wear".
+import SectionIntro from './SectionIntro.astro';
+
+interface Props {
+  list: {
+    heading: string;
+    intro?: string;
+    items: { title: string; text: string }[];
+  };
+  variant?: 'steps' | 'cards' | 'list';
+  eyebrow?: string;
+  center?: boolean;
+  id?: string;
+}
+
+const { list, variant = 'cards', eyebrow, center = false, id } = Astro.props;
+const Tag = variant === 'steps' ? 'ol' : 'ul';
+---
+
+<div>
+  <SectionIntro eyebrow={eyebrow} heading={list.heading} intro={list.intro} center={center} id={id} />
+  <Tag class:list={['points', `points--${variant}`]} role="list">
+    {
+      list.items.map((item, i) => (
+        <li class="point reveal">
+          {variant === 'steps' && (
+            <span class="point__number" aria-hidden="true">
+              {i + 1}
+            </span>
+          )}
+          <h3 class="point__title">{item.title}</h3>
+          <p class="point__text">{item.text}</p>
+        </li>
+      ))
+    }
+  </Tag>
+  <slot />
+</div>
+
+<style>
+  .points {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .point {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+  }
+
+  .point__text {
+    color: var(--muted);
+  }
+
+  .points--cards .point {
+    padding: var(--space-3);
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius-card);
+  }
+
+  .points--list .point {
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--sand);
+  }
+
+  .point__number {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: var(--space-1);
+    border-radius: 50%;
+    background: var(--plum);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .points--cards,
+    .points--list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .points--steps {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .points--cards:has(> :nth-child(3):last-child) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .points--cards:has(> :nth-child(4):last-child) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .points--list:has(> :nth-child(3):last-child) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

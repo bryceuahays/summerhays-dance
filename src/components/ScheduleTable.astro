@@ -1,0 +1,212 @@
+---
+// Static class list for marketing pages (day, time, class, level, location,
+// Book). The live schedule lives in the booking embed. Phones get one card per
+// class; the ARIA roles keep it a table for screen readers either way.
+import type { CollectionEntry } from 'astro:content';
+import { formatTimeRange } from '../lib/content';
+import { getSite, url } from '../lib/site';
+
+interface Props {
+  classes: CollectionEntry<'schedule'>[];
+  /** Read aloud as the table's name, e.g. the section heading. */
+  caption: string;
+  /** Before launch there's nothing to book, so the Book column is hidden. */
+  prelaunch?: boolean;
+}
+
+const site = await getSite();
+const { classes, caption, prelaunch = site.prelaunch } = Astro.props;
+const cols = site.ui.scheduleColumns;
+const bookHref = (c: CollectionEntry<'schedule'>) =>
+  c.data.bookingUrl || site.booking.url || url('/schedule');
+---
+
+<table class:list={['schedule', { 'schedule--book': !prelaunch }]} role="table">
+  <caption class="visually-hidden">{caption}</caption>
+  <thead role="rowgroup">
+    <tr role="row">
+      <th scope="col" role="columnheader">{cols.day}</th>
+      <th scope="col" role="columnheader">{cols.time}</th>
+      <th scope="col" role="columnheader">{cols.className}</th>
+      <th scope="col" role="columnheader">{cols.level}</th>
+      <th scope="col" role="columnheader">{cols.location}</th>
+      {
+        !prelaunch && (
+          <th scope="col" role="columnheader">
+            <span class="visually-hidden">{cols.book}</span>
+          </th>
+        )
+      }
+    </tr>
+  </thead>
+  <tbody role="rowgroup">
+    {
+      classes.map((c) => (
+        <tr role="row">
+          <td role="cell" class="schedule__day">
+            {c.data.day}
+          </td>
+          <td role="cell" class="schedule__time">
+            {formatTimeRange(c.data.startTime, c.data.endTime)}
+          </td>
+          <td role="cell" class="schedule__class">
+            {c.data.className}
+          </td>
+          <td role="cell" class="schedule__level">
+            {c.data.level}
+          </td>
+          <td role="cell" class="schedule__location">
+            {c.data.location}
+          </td>
+          {!prelaunch && (
+            <td role="cell" class="schedule__book">
+              <a class="btn btn--secondary" href={bookHref(c)}>
+                {site.ui.bookClass}
+                <span class="visually-hidden">
+                  {' '}
+                  {c.data.className}, {c.data.day} {c.data.startTime}
+                </span>
+              </a>
+            </td>
+          )}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  .schedule {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .schedule th {
+    padding: 0 var(--space-2) var(--space-1);
+    border-bottom: 2px solid var(--ink);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-align: left;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .schedule td {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--sand);
+    vertical-align: middle;
+  }
+
+  .schedule__day,
+  .schedule__class {
+    font-weight: 700;
+  }
+
+  .schedule__time {
+    white-space: nowrap;
+  }
+
+  .schedule__level,
+  .schedule__location {
+    color: var(--muted);
+  }
+
+  .schedule__book {
+    text-align: right;
+  }
+
+  .schedule__book .btn {
+    padding-inline: 22px;
+  }
+
+  /* Phones and tablets: one card per class */
+  @media (max-width: 959px) {
+    .schedule thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .schedule {
+      display: block;
+    }
+
+    .schedule tbody {
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .schedule tr {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        'day   time  book'
+        'class class book'
+        'meta  meta  book'
+        'where where book';
+      column-gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
+      background: var(--cream);
+      border: 1px solid var(--sand);
+      border-radius: var(--radius-card);
+    }
+
+    .schedule td {
+      display: block;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .schedule__day {
+      grid-area: day;
+      font-size: var(--text-label);
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--plum);
+    }
+
+    /* Day and time read as one line: "TUESDAY · 7:00–8:00 PM" */
+    .schedule__time {
+      grid-area: time;
+      font-size: var(--text-label);
+      font-weight: 600;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--plum);
+    }
+
+    .schedule__time::before {
+      content: "· ";
+    }
+
+    .schedule__class {
+      grid-area: class;
+      font-size: 1.25rem;
+    }
+
+    .schedule__level {
+      grid-area: meta;
+    }
+
+    .schedule__location {
+      grid-area: where;
+      font-size: var(--text-small);
+    }
+
+    .schedule .schedule__book {
+      grid-area: book;
+      align-self: center;
+      padding-left: var(--space-1);
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 959px) {
+    .schedule tbody {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

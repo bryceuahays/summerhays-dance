@@ -1,0 +1,127 @@
+---
+// Email list and waitlist signup: first name, email and "I'm interested in".
+// Wording and the email tool's address come from site.yaml.
+import FormField from './FormField.astro';
+import ServiceForm from './ServiceForm.astro';
+import { getSite } from '../lib/site';
+
+interface Props {
+  /** Unique on the page, e.g. "band" or "waitlist". */
+  id: string;
+}
+
+const { id } = Astro.props;
+const site = await getSite();
+const s = site.signup;
+---
+
+<ServiceForm
+  id={`signup-${id}`}
+  action={site.forms.emailSignupAction}
+  submitLabel={s.buttonLabel}
+  successMessage={s.successMessage}
+  class="signup"
+>
+  <div class="signup__row">
+    <FormField id={`signup-${id}-name`} name="firstName" field={{ label: s.firstNameLabel }} autocomplete="given-name" />
+    <FormField
+      id={`signup-${id}-email`}
+      name="email"
+      type="email"
+      field={{ label: s.emailLabel }}
+      autocomplete="email"
+      required
+    />
+  </div>
+
+  <fieldset class="signup__interest">
+    <legend>{s.interestLabel}</legend>
+    <div class="signup__options">
+      {
+        s.interestOptions.map((option, i) => (
+          <label class="signup__option">
+            <input type="radio" name="interest" value={option} checked={i === s.interestOptions.length - 1} />
+            <span>{option}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  {s.note && <p class="signup__note">{s.note}</p>}
+</ServiceForm>
+
+<style>
+  .signup__row {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .signup__interest {
+    display: grid;
+    gap: var(--space-1);
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    margin-bottom: var(--space-1);
+    font-weight: 700;
+  }
+
+  .signup__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  /* Pill-shaped radio buttons, 48px tall */
+  .signup__option {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .signup__option input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .signup__option span {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: 10px 20px;
+    border: 2px solid var(--sand);
+    border-radius: var(--radius-pill);
+    background: #fff;
+    font-weight: 600;
+  }
+
+  .signup__option:hover span {
+    border-color: var(--plum);
+  }
+
+  .signup__option input:checked + span {
+    background: var(--plum);
+    border-color: var(--plum);
+    color: var(--cream);
+  }
+
+  .signup__option input:focus-visible + span {
+    outline: 3px solid var(--plum);
+    outline-offset: 3px;
+  }
+
+  .signup__note {
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+
+  @media (min-width: 640px) {
+    .signup__row {
+      grid-template-columns: 1fr 1.4fr;
+    }
+  }
+</style>

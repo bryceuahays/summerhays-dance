@@ -1,0 +1,75 @@
+---
+// Wrapper for every form that posts to the outside form or email service.
+// The action address comes from site.yaml; the hidden honeypot field catches
+// spam bots. Pass 5 adds the no-reload thank-you message.
+import { getSite } from '../lib/site';
+
+interface Props {
+  /** Unique on the page; prefixes the honeypot id. */
+  id: string;
+  action: string;
+  submitLabel: string;
+  successMessage: string;
+  class?: string;
+}
+
+const { id, action, submitLabel, successMessage, class: className } = Astro.props;
+const site = await getSite();
+---
+
+<form
+  class:list={['service-form', className]}
+  id={id}
+  action={action || undefined}
+  method="post"
+  data-service-form
+>
+  <slot />
+
+  <div class="service-form__trap" aria-hidden="true">
+    <label for={`${id}-trap`}>{site.ui.honeypot}</label>
+    <input id={`${id}-trap`} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="service-form__submit">
+    <button class="btn" type="submit">{submitLabel}</button>
+  </div>
+
+  <p class="service-form__status service-form__status--ok" role="status" data-form-success hidden>
+    {successMessage}
+  </p>
+  <p class="service-form__status service-form__status--error" role="alert" data-form-error hidden>
+    {site.formErrorMessage}
+  </p>
+</form>
+
+<style>
+  .service-form {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .service-form__trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .service-form__status {
+    padding: var(--space-2) var(--space-3);
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .service-form__status--ok {
+    background: var(--blush);
+    color: var(--plum-deep);
+  }
+
+  .service-form__status--error {
+    background: #fbe9e7;
+    color: #8a1c12;
+  }
+</style>
