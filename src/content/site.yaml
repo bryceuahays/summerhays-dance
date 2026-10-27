@@ -1,0 +1,68 @@
+# Site-wide settings. Brielle edits these in Pages CMS.
+# Anything in [square brackets] is a placeholder waiting for real details.
+
+name: Summerhays Dance
+adultProgramName: Dance Again
+teenProgramName: Teen Studio
+positioning: For teens and adults who are serious about dancing, not about competing.
+description: Hip hop, jazz and contemporary classes for teens and adults in [City], Utah. Serious about dancing, not about competing.
+city: "[City]"
+state: Utah
+email: "[hello@yourdomain.com]"
+phone: ""
+
+# Until classes open, keep this on. Every Book button then becomes
+# "Join the waitlist" and the live booking schedule is hidden.
+prelaunch: true
+
+bookLabel: Book a class
+waitlistLabel: Join the waitlist
+
+introOffer:
+  enabled: true
+  text: "New here? 2 classes in 3 weeks for $25"
+  linkText: Claim the intro offer
+  prelaunchText: "Classes open soon:"
+  prelaunchLinkText: join the waitlist
+
+nav:
+  - label: Dance Again
+    href: /dance-again
+  - label: Teens
+    href: /teens
+  - label: Schedule & Pricing
+    href: /schedule
+  - label: About
+    href: /about
+
+footer:
+  links:
+    - label: Your First Class
+      href: /first-class
+    - label: Parties & Privates
+      href: /parties
+    - label: Contact
+      href: /contact
+    - label: Policies
+      href: /policies
+  signupHeading: Get first dibs on new sessions
+  signupButton: Sign up
+  signupNote: One email per session. Unsubscribe any time.
+
+# Leave a link blank to hide that icon.
+social:
+  instagram: ""
+  tiktok: ""
+  facebook: ""
+  youtube: ""
+
+# Booking tool (Momence or OfferingTree). Filled in during pass 5.
+booking:
+  url: ""
+  embedCode: ""
+
+# Form service and email tool addresses. Filled in during pass 5.
+forms:
+  contactAction: ""
+  inquiryAction: ""
+  emailSignupAction: ""

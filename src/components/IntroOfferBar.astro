@@ -1,0 +1,61 @@
+---
+import { bookAction, url, type Site } from '../lib/site';
+
+interface Props {
+  site: Site;
+}
+
+const { site } = Astro.props;
+const offer = site.introOffer;
+const text = site.prelaunch ? offer.prelaunchText : offer.text;
+const linkText = site.prelaunch ? offer.prelaunchLinkText : offer.linkText;
+const href = site.prelaunch ? url('/waitlist') : bookAction(site).href;
+---
+
+{
+  offer.enabled && (
+    <div class="offer-bar on-dark">
+      <p class="container offer-bar__inner">
+        <span>{text}</span>
+        {linkText && (
+          <a href={href}>
+            {linkText}
+            <span aria-hidden="true">→</span>
+          </a>
+        )}
+      </p>
+    </div>
+  )
+}
+
+<style>
+  .offer-bar {
+    background: var(--plum-deep);
+    color: var(--cream);
+    font-size: var(--text-small);
+    line-height: 1.4;
+  }
+
+  .offer-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 0.5em;
+    padding-block: 10px;
+    text-align: center;
+  }
+
+  .offer-bar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 28px;
+    color: var(--cream);
+    font-weight: 700;
+  }
+
+  .offer-bar a:hover {
+    color: var(--blush);
+  }
+</style>

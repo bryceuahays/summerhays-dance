@@ -1,0 +1,168 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import { url, type Site } from '../lib/site';
+
+interface Props {
+  site: Site;
+}
+
+const { site } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="site-footer__logo" href={url('/')}>{site.name}</a>
+      <p>{site.positioning}</p>
+      <SocialLinks social={site.social} />
+    </div>
+
+    <nav class="site-footer__links" aria-label="Footer">
+      <ul role="list">
+        {
+          site.footer.links.map((item) => (
+            <li>
+              <a href={url(item.href)}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <form
+      class="site-footer__signup"
+      action={site.forms.emailSignupAction || undefined}
+      method="post"
+      data-signup
+    >
+      <label class="site-footer__signup-heading" for="footer-email">{site.footer.signupHeading}</label>
+      <div class="site-footer__signup-row">
+        <input id="footer-email" name="email" type="email" autocomplete="email" required />
+        <button class="btn" type="submit">{site.footer.signupButton}</button>
+      </div>
+      {site.footer.signupNote && <p class="site-footer__note">{site.footer.signupNote}</p>}
+    </form>
+  </div>
+
+  <div class="container site-footer__base">
+    <p>© {year} {site.name} · {site.city}, {site.state}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--plum-deep);
+    color: var(--cream);
+    padding-top: var(--section-pad);
+  }
+
+  .site-footer a:not(.btn) {
+    color: var(--cream);
+  }
+
+  .site-footer a:not(.btn):hover {
+    color: var(--blush);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .site-footer__brand {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    max-width: 34ch;
+  }
+
+  .site-footer__logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 0.95;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .site-footer__links ul {
+    display: grid;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__links a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 500;
+  }
+
+  .site-footer__signup {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+
+  .site-footer__signup-heading {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .site-footer__signup-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .site-footer__signup input {
+    flex: 1 1 200px;
+    min-width: 0;
+    min-height: var(--tap);
+    padding: 10px 20px;
+    border: 2px solid var(--cream);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--cream);
+  }
+
+  .site-footer__signup input::placeholder {
+    color: rgb(250 246 241 / 0.75);
+  }
+
+  .site-footer__note {
+    font-size: var(--text-small);
+    opacity: 0.85;
+  }
+
+  .site-footer__base {
+    margin-top: var(--section-pad);
+    padding-block: var(--space-3);
+    border-top: 1px solid rgb(250 246 241 / 0.2);
+    font-size: var(--text-small);
+  }
+
+  @media (min-width: 768px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .site-footer__signup {
+      grid-column: 1 / -1;
+      max-width: 560px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .site-footer__grid {
+      grid-template-columns: 1.3fr 0.8fr 1.4fr;
+      gap: var(--space-8);
+    }
+
+    .site-footer__signup {
+      grid-column: auto;
+    }
+  }
+</style>

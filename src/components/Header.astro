@@ -1,0 +1,252 @@
+---
+import { bookAction, url, type Site } from '../lib/site';
+
+interface Props {
+  site: Site;
+  /** Start transparent over a dark hero, then turn solid cream on scroll. */
+  overHero?: boolean;
+}
+
+const { site, overHero = false } = Astro.props;
+const book = bookAction(site);
+const current = Astro.url.pathname.replace(/\/$/, '');
+const isCurrent = (href: string) => url(href).replace(/\/$/, '') === current;
+---
+
+<header class="site-header" data-header data-over-hero={overHero ? 'true' : undefined}>
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href={url('/')}>{site.name}</a>
+
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul role="list">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={url(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn site-header__book" href={book.href}>{book.label}</a>
+
+    <button
+      class="site-header__menu"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-toggle
+    >
+      <span class="visually-hidden">Menu</span>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <path class="menu-icon__open" d="M3 6h18M3 12h18M3 18h18"></path>
+        <path class="menu-icon__close" d="M5 5l14 14M19 5L5 19"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--cream);
+    color: var(--ink);
+    border-bottom: 1px solid var(--sand);
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  /* Transparent over the hero until the page scrolls or the menu opens */
+  .site-header[data-over-hero]:not(.is-solid) {
+    background: transparent;
+    border-color: transparent;
+    color: var(--cream);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--header-h);
+  }
+
+  .site-header__logo {
+    margin-right: auto;
+    color: inherit;
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    text-transform: uppercase;
+    /* On phones the wordmark stacks one word per line to leave room for Book */
+    width: min-content;
+    padding-block: 6px;
+  }
+
+  .site-header__logo:hover {
+    color: inherit;
+  }
+
+  .site-header__book {
+    flex-shrink: 0;
+    padding-inline: 18px;
+    font-size: 0.9375rem;
+  }
+
+  .site-header[data-over-hero]:not(.is-solid) .site-header__book {
+    background: var(--cream);
+    border-color: var(--cream);
+    color: var(--plum-deep);
+  }
+
+  .site-header[data-over-hero]:not(.is-solid) .site-header__book:hover {
+    background: var(--blush);
+    border-color: var(--blush);
+  }
+
+  .site-header[data-over-hero]:not(.is-solid) :focus-visible {
+    outline-color: var(--cream);
+  }
+
+  .site-nav ul {
+    display: flex;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    color: inherit;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+
+  .site-header__menu {
+    display: none;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--tap);
+    height: var(--tap);
+    margin-right: -12px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .site-header__menu svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .menu-icon__close,
+  .site-header.menu-open .menu-icon__open {
+    display: none;
+  }
+
+  .site-header.menu-open .menu-icon__close {
+    display: inline;
+  }
+
+  /* Phones and tablets: logo, Book, menu icon; links drop down as a panel */
+  @media (max-width: 959px) {
+    .site-header__inner {
+      flex-wrap: wrap;
+      column-gap: var(--space-1);
+    }
+
+    .site-header__book {
+      padding-inline: 16px;
+    }
+
+    /* Without JavaScript the links simply sit on their own row */
+    .site-nav {
+      order: 3;
+      width: 100%;
+    }
+
+    .site-nav ul {
+      flex-wrap: wrap;
+      column-gap: var(--space-3);
+    }
+
+    :global(.js) .site-header__menu {
+      display: grid;
+    }
+
+    :global(.js) .site-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--cream);
+      color: var(--ink);
+      border-bottom: 1px solid var(--sand);
+      box-shadow: 0 16px 32px rgb(31 26 30 / 0.08);
+    }
+
+    :global(.js) .site-header.menu-open .site-nav {
+      display: block;
+    }
+
+    :global(.js) .site-nav ul {
+      flex-direction: column;
+      max-width: calc(var(--max-width) + var(--gutter) * 2);
+      margin-inline: auto;
+      padding: var(--space-1) var(--gutter) var(--space-3);
+    }
+
+    :global(.js) .site-nav li + li {
+      border-top: 1px solid var(--sand);
+    }
+
+    :global(.js) .site-nav a {
+      min-height: 56px;
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 560px) {
+    .site-header__logo {
+      width: auto;
+      font-size: 1.625rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .site-header__inner {
+      gap: var(--space-4);
+    }
+
+    .site-nav ul {
+      gap: var(--space-3);
+    }
+
+    .site-header__book {
+      padding-inline: 24px;
+      font-size: 1rem;
+    }
+  }
+</style>

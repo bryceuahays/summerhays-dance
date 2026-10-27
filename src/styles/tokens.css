@@ -1,0 +1,58 @@
+/* Summerhays Dance design tokens. Plum is the only accent; text on plum is cream. */
+:root {
+  /* Color */
+  --cream: #faf6f1;
+  --ink: #1f1a1e;
+  --muted: #6b6168;
+  --plum: #5b2350;
+  --plum-deep: #3d1636;
+  --blush: #f1e6ee;
+  --sand: #eadfd2;
+
+  /* Type */
+  --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-base: 17px;
+  --text-hero: clamp(2.75rem, 7vw, 6rem);
+  --text-h2: clamp(2rem, 4.5vw, 3.5rem);
+  --text-h3: 1.5rem;
+  --text-small: 0.9375rem;
+  --text-label: 13px;
+  --leading-display: 0.95;
+  --leading-body: 1.6;
+  --tracking-label: 0.12em;
+
+  /* 8px spacing scale */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+
+  /* Layout */
+  --max-width: 1200px;
+  --gutter: 20px;
+  --section-pad: var(--space-8);
+  --header-h: 72px;
+
+  /* Shape */
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --tap: 48px;
+
+  /* Motion: subtle and short */
+  --fade-duration: 180ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --text-base: 18px;
+    --gutter: 32px;
+    --section-pad: var(--space-12);
+    --header-h: 80px;
+  }
+}
