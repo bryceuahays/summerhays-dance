@@ -1,0 +1,14 @@
+name: 8-week adult session
+group: classes
+program: dance-again
+pricePrefix: ""
+price: 140
+priceSuffix: per session
+summary: One class a week for eight weeks, ending in the showcase.
+includes:
+  - 8 weekly classes in one style and level
+  - One makeup week
+  - Showcase at the end
+highlight: false
+badge: ""
+order: 3

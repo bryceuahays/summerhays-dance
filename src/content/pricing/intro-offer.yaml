@@ -1,0 +1,13 @@
+name: Intro offer
+group: classes
+pricePrefix: ""
+price: 25
+priceSuffix: for 2 classes
+summary: Two classes in your first three weeks. The easiest way to find out if it's for you.
+includes:
+  - Any two classes in your first 3 weeks
+  - Any style, any level
+  - New students only
+highlight: true
+badge: New here? Start here
+order: 1

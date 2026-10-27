@@ -2,8 +2,7 @@
 # Anything in [square brackets] is a placeholder waiting for real details.
 
 name: Summerhays Dance
-adultProgramName: Dance Again
-teenProgramName: Teen Studio
+instructorName: Brielle
 positioning: For teens and adults who are serious about dancing, not about competing.
 description: Hip hop, jazz and contemporary classes for teens and adults in [City], Utah. Serious about dancing, not about competing.
 city: "[City]"
@@ -35,19 +34,32 @@ nav:
   - label: About
     href: /about
 
-footer:
-  links:
-    - label: Your First Class
-      href: /first-class
-    - label: Parties & Privates
-      href: /parties
-    - label: Contact
-      href: /contact
-    - label: Policies
-      href: /policies
-  signupHeading: Get first dibs on new sessions
-  signupButton: Sign up
-  signupNote: One email per session. Unsubscribe any time.
+footerLinks:
+  - label: Your First Class
+    href: /first-class
+  - label: Parties & Privates
+    href: /parties
+  - label: Contact
+    href: /contact
+  - label: Policies
+    href: /policies
+
+# The email signup used in the footer, the signup band and the waitlist page.
+signup:
+  heading: Get first dibs on new sessions
+  text: Sessions are small and fill up. Get an email the day booking opens, before anyone else.
+  firstNameLabel: First name
+  emailLabel: Email
+  interestLabel: I'm interested in
+  interestOptions:
+    - Dance Again (adults)
+    - Teen Studio
+    - Both
+  buttonLabel: Sign up
+  note: One email per session. Unsubscribe any time.
+  successMessage: You're on the list. Watch your inbox for the next session.
+
+formErrorMessage: "Something went wrong and your message didn't send. Please try again, or email us directly."
 
 # Leave a link blank to hide that icon.
 social:
@@ -66,3 +78,9 @@ forms:
   contactAction: ""
   inquiryAction: ""
   emailSignupAction: ""
+
+# Cookie-free analytics (Plausible or Cloudflare Web Analytics). Off by default.
+analytics:
+  enabled: false
+  scriptSrc: ""
+  dataDomain: ""

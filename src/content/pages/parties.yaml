@@ -1,0 +1,31 @@
+title: Parties & Privates
+description: Bachelorette and girls' night dance parties, birthday groups and private dance lessons in [City], Utah.
+heading: Parties & privates
+intro: Learn a routine together, laugh a lot, and leave with a video worth keeping.
+form:
+  heading: Send an inquiry
+  intro: Tell us a bit about your group and Brielle will reply within two days.
+  name:
+    label: Your name
+  email:
+    label: Email
+  phone:
+    label: Phone
+    hint: Optional
+  eventType:
+    label: What are you planning?
+    options:
+      - Bachelorette or girls' night
+      - Birthday group
+      - Private lesson
+      - Something else
+  dates:
+    label: Preferred dates
+    hint: A few options helps
+  groupSize:
+    label: Group size
+  notes:
+    label: Anything else?
+    hint: Song ideas, ages, the occasion
+  submitLabel: Send an inquiry
+  successMessage: Thanks! Your inquiry is in. Brielle will reply within two days.

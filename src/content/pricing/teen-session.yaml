@@ -1,0 +1,14 @@
+name: 8-week teen session
+group: classes
+program: teens
+pricePrefix: ""
+price: 150
+priceSuffix: per session
+summary: One class a week for eight weeks, with a performance at the end.
+includes:
+  - 8 weekly classes
+  - End-of-session performance
+  - No costume or competition fees
+highlight: false
+badge: ""
+order: 4

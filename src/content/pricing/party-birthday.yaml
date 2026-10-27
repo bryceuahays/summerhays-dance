@@ -1,0 +1,15 @@
+name: Birthday group
+group: parties
+pricePrefix: From
+price: 200
+priceSuffix: per group
+summary: A dance party with real choreography for teens or adults celebrating together.
+includes:
+  - 60-minute private class
+  - Up to 12 dancers
+  - Ages 13 and up
+highlight: false
+badge: ""
+photo:
+  alt: Birthday group posing after learning a routine
+order: 2

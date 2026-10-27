@@ -1,0 +1,273 @@
+---
+// Hidden review page (noindex, left out of the sitemap). Pass 2 lists every
+// piece of content so the data layer can be checked; pass 3 turns it into the
+// design-system styleguide with every component rendered once.
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { getSite } from '../lib/site';
+import {
+  formatPrice,
+  getFaqs,
+  getPage,
+  getPricing,
+  getSchedule,
+} from '../lib/content';
+
+const site = await getSite();
+const programs = await getCollection('programs');
+const schedule = await getSchedule();
+const classPrices = await getPricing('classes');
+const partyPrices = await getPricing('parties');
+const faqs = await getFaqs();
+const testimonials = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const faqBodies = await Promise.all(faqs.map(async (f) => (await render(f)).Content));
+
+const pages = await Promise.all(
+  (
+    [
+      'home',
+      'schedulePage',
+      'firstClass',
+      'about',
+      'parties',
+      'waitlist',
+      'contact',
+      'policies',
+      'notFound',
+    ] as const
+  ).map(async (c) => ({ collection: c, entry: await getPage(c) })),
+);
+---
+
+<Base title="Styleguide" noindex>
+  <section class="section">
+    <div class="container stack">
+      <p class="eyebrow">Internal · not linked from the site</p>
+      <h1>Content check</h1>
+      <p class="lede">
+        Everything below comes from <code>src/content</code>. Prelaunch mode is{' '}
+        <strong>{site.prelaunch ? 'on' : 'off'}</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--blush">
+    <div class="container stack">
+      <h2>Programs ({programs.length})</h2>
+      {
+        programs.map((p) => (
+          <article class="sg-card">
+            <p class="eyebrow">
+              {p.data.door.eyebrow} · {p.data.audience}
+            </p>
+            <h3>{p.data.name}</h3>
+            <p>
+              <strong>{p.data.hero.headline}</strong> {p.data.hero.subline}
+            </p>
+            <p class="sg-meta">
+              Sections:{' '}
+              {Object.keys(p.data)
+                .filter((k) => !['title', 'description', 'name', 'audience'].includes(k))
+                .join(', ')}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2>Schedule ({schedule.length} classes)</h2>
+      <div class="sg-scroll" tabindex="0" role="region" aria-label="Schedule table">
+        <table class="sg-table">
+          <thead>
+            <tr>
+              <th scope="col">Day</th>
+              <th scope="col">Time</th>
+              <th scope="col">Class</th>
+              <th scope="col">Level</th>
+              <th scope="col">Program</th>
+              <th scope="col">Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              schedule.map((c) => (
+                <tr>
+                  <td>{c.data.day}</td>
+                  <td>
+                    {c.data.startTime}–{c.data.endTime}
+                  </td>
+                  <td>{c.data.className}</td>
+                  <td>{c.data.level}</td>
+                  <td>{c.data.program.id}</td>
+                  <td>{c.data.location}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container stack">
+      <h2>Pricing ({classPrices.length + partyPrices.length} cards)</h2>
+      {
+        [
+          ['Classes', classPrices],
+          ['Parties & privates', partyPrices],
+        ].map(([label, cards]) => (
+          <>
+            <h3>{label as string}</h3>
+            <div class="sg-grid">
+              {(cards as typeof classPrices).map((p) => (
+                <article class:list={['sg-card', { 'sg-card--highlight': p.data.highlight }]}>
+                  {p.data.badge && <p class="eyebrow">{p.data.badge}</p>}
+                  <h4>{p.data.name}</h4>
+                  <p class="sg-price">
+                    {p.data.pricePrefix} {formatPrice(p.data.price)} <span>{p.data.priceSuffix}</span>
+                  </p>
+                  <p>{p.data.summary}</p>
+                  <ul>
+                    {p.data.includes.map((i) => (
+                      <li>{i}</li>
+                    ))}
+                  </ul>
+                  <p class="sg-meta">Program: {p.data.program?.id ?? 'all'}</p>
+                </article>
+              ))}
+            </div>
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2>FAQs ({faqs.length})</h2>
+      {
+        faqs.map((f, i) => {
+          const Answer = faqBodies[i]!;
+          return (
+            <details class="sg-faq">
+              <summary>{f.data.question}</summary>
+              <Answer />
+              <p class="sg-meta">Topics: {f.data.topics.join(', ')}</p>
+            </details>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="section section--blush">
+    <div class="container stack">
+      <h2>Testimonials ({testimonials.length})</h2>
+      <div class="sg-grid">
+        {
+          testimonials.map((t) => (
+            <figure class="sg-card">
+              <blockquote>{t.data.quote}</blockquote>
+              <figcaption>
+                {t.data.name} · {t.data.program.id} ·{' '}
+                <strong>{t.data.published ? 'published' : 'hidden'}</strong>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2>Page copy ({pages.length} files)</h2>
+      <div class="sg-grid">
+        {
+          pages.map(({ collection, entry }) => (
+            <article class="sg-card">
+              <p class="eyebrow">{collection}</p>
+              <h3>{'title' in entry.data ? entry.data.title : site.name}</h3>
+              <p>{entry.data.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sg-card {
+    padding: var(--space-3);
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    border-radius: var(--radius-card);
+  }
+
+  .sg-card > * + * {
+    margin-top: var(--space-1);
+  }
+
+  .sg-card--highlight {
+    border: 2px solid var(--plum);
+  }
+
+  .sg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: var(--space-2);
+  }
+
+  .sg-meta {
+    color: var(--muted);
+    font-size: var(--text-small);
+  }
+
+  .sg-price {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .sg-price span {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+
+  .sg-scroll {
+    overflow-x: auto;
+  }
+
+  .sg-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: var(--text-small);
+  }
+
+  .sg-table th,
+  .sg-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--sand);
+    text-align: left;
+  }
+
+  .sg-faq {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--sand);
+  }
+
+  .sg-faq summary {
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+</style>

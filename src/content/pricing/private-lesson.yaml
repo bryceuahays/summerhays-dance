@@ -1,0 +1,14 @@
+name: Private lesson
+group: parties
+pricePrefix: From
+price: 60
+priceSuffix: per hour
+summary: One-on-one or a small group. Wedding dances, audition prep, or catching up fast.
+includes:
+  - 60 minutes with Brielle
+  - 1 to 3 dancers
+highlight: false
+badge: ""
+photo:
+  alt: Brielle coaching a private student
+order: 3

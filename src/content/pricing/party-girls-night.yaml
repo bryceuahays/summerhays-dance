@@ -1,0 +1,15 @@
+name: Bachelorette or girls' night
+group: parties
+pricePrefix: From
+price: 250
+priceSuffix: per group
+summary: A private class for your group. Learn a routine to a song you pick, then film it.
+includes:
+  - 75-minute private class
+  - Up to 12 dancers
+  - Your choice of song
+highlight: false
+badge: ""
+photo:
+  alt: Friends at a bachelorette dance party, mid-routine
+order: 1

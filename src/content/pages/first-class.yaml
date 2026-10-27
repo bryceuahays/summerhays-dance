@@ -1,0 +1,48 @@
+title: Your First Class
+description: What to expect at your first Summerhays Dance class, what to wear and bring, parking and arrival, and answers to common questions.
+heading: Your first class
+intro: Nervous? Everyone is. Here's exactly what happens, so there are no surprises.
+timeline:
+  heading: What to expect
+  items:
+    - time: Before class
+      title: Arrive 10 minutes early
+      text: Say hi to Brielle, sign the waiver if you haven't online, and find a spot.
+    - time: First 10 minutes
+      title: Warm-up
+      text: Easy stretching and movement to get your body ready. Go at your own pace.
+    - time: Next 15 minutes
+      title: Technique and across the floor
+      text: A few key moves for the style, broken down slowly.
+    - time: Next 25 minutes
+      title: Choreography
+      text: Learn a short routine step by step, adding a little each time.
+    - time: Last 10 minutes
+      title: Put it together
+      text: Run it with the music a few times, then a cool-down stretch.
+wear:
+  heading: What to wear and bring
+  items:
+    - title: Clothes
+      text: Anything comfortable you can move in. Leggings, joggers, shorts, T-shirts all work.
+    - title: Shoes
+      text: Clean sneakers for hip hop. Socks or bare feet for jazz and contemporary to start.
+    - title: Bring
+      text: A water bottle. A small towel if you like.
+arrival:
+  heading: Parking and arrival
+  items:
+    - title: Where
+      text: "[Studio space address or area, City]. Full details are in your booking confirmation."
+    - title: Parking
+      text: "[Parking details, e.g. free lot behind the building.]"
+    - title: Getting in
+      text: "[Which door to use and where to wait if the previous class is still running.]"
+accessibility:
+  heading: Accessibility
+  text: "[Placeholder: step-free access, restrooms and seating details for the studio space.] Every move has a modification, and you can sit out any part of class. Tell Brielle what you need."
+faqHeading: Common questions
+cta:
+  heading: Ready when you are
+  text: Two classes in three weeks for $25.
+  buttonLabel: Claim the intro offer

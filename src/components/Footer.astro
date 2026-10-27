@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
     <nav class="site-footer__links" aria-label="Footer">
       <ul role="list">
         {
-          site.footer.links.map((item) => (
+          site.footerLinks.map((item) => (
             <li>
               <a href={url(item.href)}>{item.label}</a>
             </li>
@@ -36,12 +36,12 @@ const year = new Date().getFullYear();
       method="post"
       data-signup
     >
-      <label class="site-footer__signup-heading" for="footer-email">{site.footer.signupHeading}</label>
+      <label class="site-footer__signup-heading" for="footer-email">{site.signup.heading}</label>
       <div class="site-footer__signup-row">
         <input id="footer-email" name="email" type="email" autocomplete="email" required />
-        <button class="btn" type="submit">{site.footer.signupButton}</button>
+        <button class="btn" type="submit">{site.signup.buttonLabel}</button>
       </div>
-      {site.footer.signupNote && <p class="site-footer__note">{site.footer.signupNote}</p>}
+      {site.signup.note && <p class="site-footer__note">{site.signup.note}</p>}
     </form>
   </div>
 

@@ -1,0 +1,22 @@
+title: Contact
+description: Get in touch with Summerhays Dance in [City], Utah. Questions about classes, teen programs, parties or private lessons.
+heading: Get in touch
+intro: Questions about classes, Teen Studio, parties or anything else? Send a message and Brielle will reply within two days.
+form:
+  heading: Send a message
+  name:
+    label: Your name
+  email:
+    label: Email
+  message:
+    label: Message
+  submitLabel: Send a message
+  successMessage: Thanks! Your message is in. Brielle will reply within two days.
+details:
+  heading: Other ways to reach us
+  emailLabel: Email
+  phoneLabel: Phone
+  socialLabel: Follow along
+where:
+  heading: Where classes meet
+  text: Classes meet in a rented studio space in [City], Utah. The exact address is in your booking confirmation.

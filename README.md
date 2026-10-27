@@ -2,7 +2,7 @@
 
 Marketing site for Summerhays Dance: hip hop, jazz and contemporary for teens and adults in Utah. Built with [Astro](https://astro.build) as a plain static site and deployed to GitHub Pages. The full spec is in [BRIEF.md](BRIEF.md).
 
-> Status: pass 1 of 6 (scaffold). Brielle's "How to edit your site" guide is added in pass 6.
+> Status: pass 2 of 6 (content layer). Brielle's "How to edit your site" guide is added in pass 6.
 
 ## Run it on your computer
 
@@ -17,11 +17,20 @@ Then open http://localhost:4321. On Windows PowerShell, type `npm.cmd` in place 
 
 ## Where things live
 
-- `src/content/site.yaml`: business name, contact details, the prelaunch switch, the intro offer, menus, social links, booking and form addresses. All the words come from `src/content`, never from the components.
+- `src/content/site.yaml`: business name, contact details, the prelaunch switch, the intro offer, menus, email signup wording, social links, booking and form addresses.
+- `src/content/programs/`: Dance Again and Teen Studio, one file each.
+- `src/content/schedule/`: one file per weekly class in the schedule preview.
+- `src/content/pricing/`: one file per price card (classes, parties and privates).
+- `src/content/faqs/`: one file per question, tagged by topic.
+- `src/content/testimonials/`: one file per quote; only those marked `published: true` show.
+- `src/content/pages/`: each page's own wording, one file per page.
+- `src/content.config.ts`: the rules each content file must follow. A typo (like a time written `7pm`) stops the build with a clear message instead of publishing a broken page.
 - `src/styles/tokens.css`: colors, fonts and spacing.
 - `src/components/`: one file per piece of the design system.
 - `src/layouts/Base.astro`: the page shell (head tags, offer bar, header, footer).
 - `src/pages/`: one file per page.
+
+All the words come from `src/content`, never from the components. A hidden page at `/styleguide` lists everything for review.
 
 ## Deploy
 

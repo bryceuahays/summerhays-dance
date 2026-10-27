@@ -1,0 +1,13 @@
+name: Drop-in class
+group: classes
+program: dance-again
+pricePrefix: ""
+price: 20
+priceSuffix: per class
+summary: One adult class, when a spot is open.
+includes:
+  - Any adult class with space
+  - Pay as you go
+highlight: false
+badge: ""
+order: 2

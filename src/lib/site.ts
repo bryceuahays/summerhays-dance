@@ -15,9 +15,12 @@ export function url(path: string) {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
-/** Where every "Book" button goes: the waitlist before launch, the schedule after. */
-export function bookAction(site: Site) {
+/**
+ * Where every "Book" button goes: the waitlist before launch, the schedule after.
+ * `label` is the page's own wording for booking mode, e.g. "Book a trial class".
+ */
+export function bookAction(site: Site, label = site.bookLabel) {
   return site.prelaunch
     ? { href: url('/waitlist'), label: site.waitlistLabel }
-    : { href: url('/schedule'), label: site.bookLabel };
+    : { href: url('/schedule'), label };
 }

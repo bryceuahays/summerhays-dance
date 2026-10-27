@@ -1,0 +1,43 @@
+description: Hip hop, jazz and contemporary for teens and adults in [City], Utah. Small classes, real training and a showcase every session. Serious about dancing, not about competing.
+hero:
+  headline: Come dance again.
+  subline: Hip hop, jazz and contemporary for teens and adults in [City], Utah. Serious about dancing, not about competing.
+  primaryLabel: Book your first class
+  secondary:
+    label: See the schedule
+    href: /schedule
+  photo:
+    alt: A class mid-routine, dancers moving together
+  video: ""
+doors:
+  heading: Two ways in
+styles:
+  heading: Three styles, one studio
+  items:
+    - name: Hip hop
+      text: Grooves, footwork and attitude, set to music you actually listen to.
+      photo:
+        alt: Hip hop class hitting a sharp pose
+    - name: Jazz
+      text: Turns, kicks and big, joyful movement with clean technique.
+      photo:
+        alt: Jazz dancer mid-kick
+    - name: Contemporary
+      text: Expressive, grounded movement that tells a story.
+      photo:
+        alt: Contemporary dancer reaching low to the floor
+howItWorks:
+  heading: How it works
+  items:
+    - title: Try a class
+      text: Start with the intro offer, two classes in three weeks for $25.
+    - title: Join an 8-week session
+      text: One class a week with the same small group, building one piece together.
+    - title: Perform at the showcase
+      text: End the session on stage for friends and family. Optional, and always fun.
+meetInstructor:
+  eyebrow: Meet your teacher
+  heading: Meet Brielle
+  linkLabel: Read Brielle's story
+testimonials:
+  heading: What dancers say
