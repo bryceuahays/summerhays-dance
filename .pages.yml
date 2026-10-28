@@ -578,7 +578,7 @@ content:
       - { name: body, label: Policies, type: rich-text, description: "Use Heading 2 for each policy; each one gets its own link at the top of the page." }
 
   - name: notFound
-    label: "Page: Not found (404)"
+    label: "Page: Broken link page"
     type: file
     path: src/content/pages/not-found.yaml
     format: yaml
