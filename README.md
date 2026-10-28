@@ -10,7 +10,7 @@ You edit everything in **Pages CMS**, a website that edits this site for you. Yo
 
 ### Sign in
 
-1. Go to **[app.pagescms.org](https://app.pagescms.org)** and choose **Sign in with GitHub**.
+1. The first time, open the invitation email from Pages CMS and follow its link. You don't need a GitHub account. After that, go to **[app.pagescms.org](https://app.pagescms.org)** and sign in with the same email address.
 2. Pick **summerhays-dance**.
 3. The menu on the left lists everything you can change: **Site settings**, **Classes**, **Prices**, **FAQs**, **Testimonials**, **Programs**, and one **Page:** entry per page.
 
@@ -49,9 +49,17 @@ You edit everything in **Pages CMS**, a website that edits this site for you. Yo
 
 ### Give Brielle editing access
 
-1. On GitHub, open the repo → **Settings** → **Collaborators** → **Add people**, and invite Brielle's GitHub account.
-2. She accepts the invite, then signs in at [app.pagescms.org](https://app.pagescms.org). The first time, Pages CMS asks to install its GitHub app on the repo; approve it for **summerhays-dance** only.
-3. The editor's fields are defined in [.pages.yml](.pages.yml). Photos upload to `src/assets/images` and are written in content as `@images/name.jpg`.
+You do this once. Only you can, because the Pages CMS app has to be installed by the account that owns the repo.
+
+1. Go to [app.pagescms.org](https://app.pagescms.org) and choose **Sign in with GitHub**.
+2. When it asks, install the Pages CMS GitHub app on your account. Choose **Only select repositories** and pick **summerhays-dance**.
+3. Open **summerhays-dance** in Pages CMS, go to **Collaborators**, and invite Brielle's email address. She gets an email with a sign-in link and doesn't need a GitHub account.
+
+As an email collaborator she can edit content and photos, but not the editor setup or the collaborator list. Her saves go through the app, so the GitHub history shows them as made by Pages CMS rather than by her.
+
+If she'd rather use a GitHub account: invite it on GitHub (repo → **Settings** → **Collaborators** → **Add people**), and once she accepts, she signs in at app.pagescms.org with **Sign in with GitHub**. Your app install from step 2 covers her too.
+
+The editor's fields are defined in [.pages.yml](.pages.yml). Photos upload to `src/assets/images` and are written in content as `@images/name.jpg`.
 
 ### Hero video
 
