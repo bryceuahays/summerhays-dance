@@ -1,0 +1,590 @@
+# Pages CMS (https://pagescms.org) editing setup for the Summerhays Dance site.
+# Every field here maps to a file in src/content. The site checks each save
+# (src/content.config.ts); if something is entered wrong, the build stops and
+# the last good version of the site stays live.
+
+media:
+  input: src/assets/images
+  output: "@images"
+  extensions: [jpg, jpeg, png, webp, avif]
+
+content:
+  # ------------------------------------------------------------ site-wide
+  - name: site
+    label: Site settings
+    type: file
+    path: src/content/site.yaml
+    format: yaml
+    fields:
+      - name: prelaunch
+        label: Prelaunch mode
+        type: boolean
+        description: "On: every Book button says Join the waitlist and the booking schedule is hidden. Turn off the day classes open."
+      - { name: name, label: Business name, type: string, required: true }
+      - { name: instructorName, label: Teacher's first name, type: string, required: true }
+      - { name: positioning, label: One-line positioning, type: string, description: Shown in the footer. }
+      - { name: description, label: Site description for Google, type: text }
+      - { name: city, label: City, type: string }
+      - { name: state, label: State, type: string }
+      - { name: email, label: Contact email, type: string }
+      - { name: phone, label: Phone, type: string, description: Leave empty to hide it. }
+      - name: socialImage
+        label: Share image
+        type: image
+        description: The picture shown when the site is shared on social media or in messages. Optional; the home page photo is used if empty.
+      - { name: bookLabel, label: Book button wording, type: string, description: "e.g. Book a class" }
+      - { name: waitlistLabel, label: Waitlist button wording, type: string, description: Used on every Book button in prelaunch mode. }
+      - name: introOffer
+        label: Intro-offer bar (top of every page)
+        type: object
+        fields:
+          - { name: enabled, label: Show the bar, type: boolean }
+          - { name: text, label: Text, type: string }
+          - { name: linkText, label: Link wording, type: string }
+          - { name: prelaunchText, label: Text in prelaunch mode, type: string }
+          - { name: prelaunchLinkText, label: Link wording in prelaunch mode, type: string }
+      - name: nav
+        label: Main menu
+        type: object
+        list: true
+        fields: &linkFields
+          - { name: label, label: Wording, type: string, required: true }
+          - { name: href, label: Link, type: string, required: true, description: "A page like /teens, or a full web address." }
+      - name: footerLinks
+        label: Footer links
+        type: object
+        list: true
+        fields: *linkFields
+      - name: signup
+        label: Email signup
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: text, label: Text, type: text }
+          - { name: firstNameLabel, label: First name label, type: string }
+          - { name: emailLabel, label: Email label, type: string }
+          - { name: interestLabel, label: Interest question, type: string }
+          - { name: interestOptions, label: Interest choices, type: string, list: true }
+          - { name: buttonLabel, label: Button wording, type: string }
+          - { name: note, label: Small print, type: string }
+          - { name: successMessage, label: Thank-you message, type: string }
+      - { name: formErrorMessage, label: Message when a form fails to send, type: text }
+      - name: social
+        label: Social links
+        type: object
+        description: Leave a link empty to hide its icon.
+        fields:
+          - { name: instagram, label: Instagram, type: string }
+          - { name: tiktok, label: TikTok, type: string }
+          - { name: facebook, label: Facebook, type: string }
+          - { name: youtube, label: YouTube, type: string }
+      - name: booking
+        label: Booking tool
+        type: object
+        fields:
+          - { name: url, label: Booking page address, type: string, description: "The booking tool's own schedule page." }
+          - { name: embedCode, label: Embed code, type: code, options: { language: html }, description: "Paste the booking tool's embed code exactly as given." }
+      - name: forms
+        label: Form addresses
+        type: object
+        fields:
+          - { name: contactAction, label: Contact form address, type: string, description: "e.g. https://formspree.io/f/abcdwxyz" }
+          - { name: inquiryAction, label: Party inquiry form address, type: string }
+          - { name: emailSignupAction, label: Email signup form address, type: string }
+          - name: signupFieldNames
+            label: Field names the email tool expects
+            type: object
+            fields:
+              - { name: firstName, label: First name field, type: string }
+              - { name: email, label: Email field, type: string }
+              - { name: interest, label: Interest field, type: string }
+      - name: analytics
+        label: Visitor stats (cookie-free)
+        type: object
+        fields:
+          - { name: enabled, label: On, type: boolean }
+          - { name: scriptSrc, label: Plausible script address, type: string }
+          - { name: dataDomain, label: Plausible domain, type: string }
+          - { name: cloudflareToken, label: Cloudflare token, type: string }
+      - name: ui
+        label: Small interface wording
+        type: object
+        description: Mostly read aloud by screen readers. Rarely needs changing.
+        fields:
+          - { name: skipLink, label: Skip link, type: string }
+          - { name: menu, label: Menu button, type: string }
+          - { name: mainNavLabel, label: Main menu name, type: string }
+          - { name: footerNavLabel, label: Footer menu name, type: string }
+          - { name: photoLabel, label: Placeholder prefix, type: string }
+          - { name: pauseVideo, label: Pause video, type: string }
+          - { name: playVideo, label: Play video, type: string }
+          - { name: bookClass, label: Book button in class lists, type: string }
+          - { name: honeypot, label: Hidden spam-trap label, type: string }
+          - name: scheduleColumns
+            label: Class list column headings
+            type: object
+            fields:
+              - { name: day, label: Day, type: string }
+              - { name: time, label: Time, type: string }
+              - { name: className, label: Class, type: string }
+              - { name: level, label: Level, type: string }
+              - { name: location, label: Location, type: string }
+              - { name: book, label: Book, type: string }
+
+  # ------------------------------------------------------------ classes, prices, FAQs, quotes
+  - name: schedule
+    label: Classes
+    type: collection
+    path: src/content/schedule
+    format: yaml
+    filename: "{fields.program}-{fields.day}-{fields.className}.yaml"
+    view:
+      fields: [day, startTime, className, level, program]
+      primary: className
+    fields:
+      - name: program
+        label: Program
+        type: select
+        required: true
+        options:
+          values: &programs
+            - { value: dance-again, label: Dance Again (adults) }
+            - { value: teens, label: Teen Studio }
+      - name: day
+        label: Day
+        type: select
+        required: true
+        options:
+          values: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+      - name: startTime
+        label: Start time
+        type: string
+        required: true
+        description: "Like 6:30 PM"
+        pattern: &clock
+          regex: '^(1[0-2]|[1-9]):[0-5]\d\s?(AM|PM|am|pm)$'
+          message: Use a time like 6:30 PM
+      - { name: endTime, label: End time, type: string, required: true, description: "Like 7:30 PM", pattern: *clock }
+      - { name: className, label: Class, type: string, required: true, description: "e.g. Hip Hop" }
+      - { name: level, label: Level, type: string, required: true }
+      - { name: location, label: Location, type: string, required: true }
+      - { name: bookingUrl, label: Booking link for this class, type: string, description: Optional. Leave empty to use the main booking page. }
+
+  - name: pricing
+    label: Prices
+    type: collection
+    path: src/content/pricing
+    format: yaml
+    view:
+      fields: [name, price, group, order]
+      primary: name
+    fields:
+      - { name: name, label: Name, type: string, required: true }
+      - name: group
+        label: Shown on
+        type: select
+        required: true
+        options:
+          values:
+            - { value: classes, label: Schedule & Pricing and program pages }
+            - { value: parties, label: Parties & Privates page }
+      - name: program
+        label: Only for this program
+        type: select
+        description: Leave empty to show it for both programs (like the intro offer).
+        options:
+          values: *programs
+      - { name: pricePrefix, label: Before the price, type: string, description: "e.g. From" }
+      - { name: price, label: Price (dollars), type: number, required: true }
+      - { name: priceSuffix, label: After the price, type: string, description: "e.g. per session" }
+      - { name: summary, label: Summary, type: text, required: true }
+      - { name: includes, label: What's included, type: string, list: true }
+      - { name: highlight, label: Highlight this card (plum), type: boolean }
+      - { name: badge, label: Badge, type: string, description: "Small label on top, e.g. New here? Start here" }
+      - name: photo
+        label: Photo
+        type: object
+        description: Optional. Used on party cards.
+        fields: &photoFields
+          - { name: src, label: Image, type: image, description: Leave empty to show a labeled placeholder box. }
+          - { name: alt, label: Photo description, type: string, required: true, description: "Describe the photo for screen readers. Until there's a photo, this labels the placeholder." }
+      - { name: order, label: Order, type: number, description: Lower numbers show first. }
+
+  - name: faqs
+    label: FAQs
+    type: collection
+    path: src/content/faqs
+    format: yaml-frontmatter
+    view:
+      fields: [question, order]
+      primary: question
+    fields:
+      - { name: question, label: Question, type: string, required: true }
+      - name: topics
+        label: Topics
+        type: select
+        description: Program pages show only the questions tagged with their topics. The First Class page shows them all.
+        options:
+          multiple: true
+          values: &topics [age, fitness, what-to-wear, first-class, booking, pricing, policies, teens]
+      - { name: order, label: Order, type: number, description: Lower numbers show first. }
+      - { name: body, label: Answer, type: rich-text }
+
+  - name: testimonials
+    label: Testimonials
+    type: collection
+    path: src/content/testimonials
+    format: yaml
+    view:
+      fields: [name, program, published]
+      primary: name
+    fields:
+      - { name: quote, label: Quote, type: text, required: true }
+      - { name: name, label: Name, type: string, required: true, description: "First name and last initial, e.g. Sarah K." }
+      - name: program
+        label: Program
+        type: select
+        required: true
+        options:
+          values: *programs
+      - { name: published, label: Show on the site, type: boolean, description: Only turn on once the quote is real and the dancer has said yes. }
+      - { name: order, label: Order, type: number }
+
+  # ------------------------------------------------------------ programs
+  - name: programs
+    label: Programs
+    type: collection
+    path: src/content/programs
+    format: yaml-frontmatter
+    view:
+      fields: [name, audience]
+      primary: name
+    fields:
+      - { name: title, label: Page title (browser tab and Google), type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: name, label: Program name, type: string, required: true }
+      - { name: audience, label: Who it's for (short), type: string, description: "e.g. Ages 13 to 18" }
+      - name: door
+        label: Card on the home page
+        type: object
+        fields:
+          - { name: eyebrow, label: Small label, type: string }
+          - { name: text, label: Text, type: text }
+          - { name: linkLabel, label: Link wording, type: string }
+          - { name: photo, label: Photo, type: object, fields: *photoFields }
+      - name: hero
+        label: Top of the page
+        type: object
+        fields: &heroFields
+          - { name: eyebrow, label: Small label, type: string }
+          - { name: headline, label: Headline, type: string, required: true }
+          - { name: subline, label: Subline, type: text, required: true }
+          - { name: primaryLabel, label: Main button wording, type: string, description: Becomes the waitlist button in prelaunch mode. }
+          - name: secondary
+            label: Second button
+            type: object
+            fields: *linkFields
+          - { name: photo, label: Background photo, type: object, fields: *photoFields }
+          - { name: video, label: Background video, type: string, description: "Optional. A 10-20 second MP4 under 6 MB, uploaded to public/video, written like /video/hero.mp4. The photo shows while it loads." }
+      - name: whoFor
+        label: Who it's for
+        type: object
+        description: Leave empty to hide this section.
+        fields: &pointFields
+          - { name: heading, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+          - name: items
+            label: Points
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+      - name: levels
+        label: Level picker
+        type: object
+        description: Leave empty to hide this section.
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+          - name: items
+            label: Levels
+            type: object
+            list: true
+            fields:
+              - { name: name, label: Level name, type: string }
+              - { name: prompt, label: "\"Sounds like me\" sentence", type: string }
+              - { name: text, label: Description, type: text }
+      - { name: sessionFormat, label: How sessions work, type: object, description: Leave empty to hide this section., fields: *pointFields }
+      - { name: different, label: What makes it different, type: object, description: Leave empty to hide this section., fields: *pointFields }
+      - name: parents
+        label: For parents
+        type: object
+        description: Leave empty to hide this section.
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+          - name: items
+            label: Points
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+          - { name: policyLinkLabel, label: Safety policy link wording, type: string }
+      - name: schedule
+        label: Class list section
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: intro, label: Intro, type: text }
+      - name: pricing
+        label: Prices section
+        type: object
+        description: Leave empty to hide prices on this page.
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+      - name: faq
+        label: FAQ section
+        type: object
+        description: Leave empty to hide this section.
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - name: topics
+            label: Show questions tagged
+            type: select
+            options:
+              multiple: true
+              values: *topics
+      - name: cta
+        label: Closing band
+        type: object
+        fields: &ctaFields
+          - { name: heading, label: Heading, type: string, required: true }
+          - { name: text, label: Text, type: text }
+          - { name: buttonLabel, label: Button wording, type: string, required: true }
+      - { name: body, label: Intro paragraph (under the top photo), type: rich-text }
+
+  # ------------------------------------------------------------ pages
+  - name: home
+    label: "Page: Home"
+    type: file
+    path: src/content/pages/home.yaml
+    format: yaml
+    fields:
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: hero, label: Top of the page, type: object, fields: *heroFields }
+      - name: doors
+        label: Program cards
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+      - name: styles
+        label: Dance styles
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - name: items
+            label: Styles
+            type: object
+            list: true
+            fields:
+              - { name: name, label: Style, type: string }
+              - { name: text, label: One line, type: string }
+              - { name: photo, label: Photo, type: object, fields: *photoFields }
+      - { name: howItWorks, label: How it works, type: object, fields: *pointFields }
+      - name: meetInstructor
+        label: Meet Brielle
+        type: object
+        description: The photo and short bio come from the About page.
+        fields:
+          - { name: eyebrow, label: Small label, type: string }
+          - { name: heading, label: Heading, type: string }
+          - { name: linkLabel, label: Link wording, type: string }
+      - name: testimonials
+        label: Testimonials section
+        type: object
+        description: Hidden until at least one testimonial is set to show.
+        fields:
+          - { name: heading, label: Heading, type: string }
+
+  - name: schedulePage
+    label: "Page: Schedule & Pricing"
+    type: file
+    path: src/content/pages/schedule.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: intro, label: Intro, type: text }
+      - { name: fallbackLinkLabel, label: Booking page link wording, type: string }
+      - { name: pricingHeading, label: Prices heading, type: string }
+      - { name: pricingIntro, label: Prices intro, type: text }
+      - name: prelaunch
+        label: Shown in prelaunch mode
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: text, label: Text, type: text }
+
+  - name: firstClass
+    label: "Page: Your First Class"
+    type: file
+    path: src/content/pages/first-class.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: intro, label: Intro, type: text }
+      - name: timeline
+        label: What to expect
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - name: items
+            label: Steps
+            type: object
+            list: true
+            fields:
+              - { name: time, label: When, type: string }
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+      - { name: wear, label: What to wear, type: object, fields: *pointFields }
+      - { name: arrival, label: Parking and arrival, type: object, fields: *pointFields }
+      - name: accessibility
+        label: Accessibility
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: text, label: Text, type: text }
+      - { name: faqHeading, label: FAQ heading, type: string }
+      - { name: cta, label: Closing band, type: object, fields: *ctaFields }
+
+  - name: about
+    label: "Page: About Brielle"
+    type: file
+    path: src/content/pages/about.md
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: portrait, label: Portrait, type: object, fields: *photoFields }
+      - { name: shortBio, label: Short bio (two sentences), type: text, description: Also shown on the home page. }
+      - name: credentials
+        label: Training and teaching
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: items, label: List, type: string, list: true }
+      - { name: values, label: Studio values, type: object, fields: *pointFields }
+      - { name: cta, label: Closing band, type: object, fields: *ctaFields }
+      - { name: body, label: Her story, type: rich-text }
+
+  - name: parties
+    label: "Page: Parties & Privates"
+    type: file
+    path: src/content/pages/parties.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: intro, label: Intro, type: text }
+      - name: form
+        label: Inquiry form
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: intro, label: Intro, type: text }
+          - { name: name, label: Name field, type: object, fields: &formField [{ name: label, label: Label, type: string }, { name: hint, label: Hint, type: string }] }
+          - { name: email, label: Email field, type: object, fields: *formField }
+          - { name: phone, label: Phone field, type: object, fields: *formField }
+          - name: eventType
+            label: Event type field
+            type: object
+            fields:
+              - { name: label, label: Label, type: string }
+              - { name: hint, label: Hint, type: string }
+              - { name: options, label: Choices, type: string, list: true }
+          - { name: dates, label: Dates field, type: object, fields: *formField }
+          - { name: groupSize, label: Group size field, type: object, fields: *formField }
+          - { name: notes, label: Notes field, type: object, fields: *formField }
+          - { name: submitLabel, label: Button wording, type: string }
+          - { name: successMessage, label: Thank-you message, type: string }
+
+  - name: waitlist
+    label: "Page: Waitlist"
+    type: file
+    path: src/content/pages/waitlist.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading (prelaunch), type: string }
+      - { name: text, label: Text (prelaunch), type: text }
+      - { name: launchedHeading, label: Heading (after launch), type: string }
+      - { name: launchedText, label: Text (after launch), type: text }
+
+  - name: contact
+    label: "Page: Contact"
+    type: file
+    path: src/content/pages/contact.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: intro, label: Intro, type: text }
+      - name: form
+        label: Contact form
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: name, label: Name field, type: object, fields: *formField }
+          - { name: email, label: Email field, type: object, fields: *formField }
+          - { name: message, label: Message field, type: object, fields: *formField }
+          - { name: submitLabel, label: Button wording, type: string }
+          - { name: successMessage, label: Thank-you message, type: string }
+      - name: details
+        label: Other ways to reach us
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: emailLabel, label: Email label, type: string }
+          - { name: phoneLabel, label: Phone label, type: string }
+          - { name: socialLabel, label: Social label, type: string }
+      - name: where
+        label: Where classes meet
+        type: object
+        fields:
+          - { name: heading, label: Heading, type: string }
+          - { name: text, label: Text, type: text }
+
+  - name: policies
+    label: "Page: Policies"
+    type: file
+    path: src/content/pages/policies.md
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: Page title, type: string, required: true }
+      - { name: description, label: Page description for Google, type: text, required: true }
+      - { name: heading, label: Heading, type: string }
+      - { name: intro, label: Intro, type: text }
+      - { name: updated, label: Last updated, type: string }
+      - { name: body, label: Policies, type: rich-text, description: "Use Heading 2 for each policy; each one gets its own link at the top of the page." }
+
+  - name: notFound
+    label: "Page: Not found (404)"
+    type: file
+    path: src/content/pages/not-found.yaml
+    format: yaml
+    fields:
+      - { name: title, label: Page title, type: string }
+      - { name: description, label: Description, type: string }
+      - { name: heading, label: Heading, type: string }
+      - { name: text, label: Text, type: text }
+      - { name: linkLabel, label: Link wording, type: string }

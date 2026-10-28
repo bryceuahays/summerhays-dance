@@ -11,10 +11,14 @@ type Image = SchemaContext['image'];
 
 const link = z.object({ label: z.string(), href: z.string() });
 
+/** Pages CMS saves a cleared field as "" or null; treat that as "not set". */
+const blank = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => (value === '' || value === null ? undefined : value), schema.optional());
+
 /** A photo; until the shoot, `src` is empty and `alt` labels the placeholder block. */
 const photo = (image: Image) =>
   z.object({
-    src: image().optional(),
+    src: blank(image()),
     alt: z.string(),
   });
 
@@ -81,7 +85,7 @@ const site = defineCollection({
       state: z.string(),
       email: z.string(),
       phone: z.string().default(''),
-      socialImage: image().optional(),
+      socialImage: blank(image()),
       prelaunch: z.boolean(),
       bookLabel: z.string(),
       waitlistLabel: z.string(),
@@ -225,7 +229,7 @@ const pricing = defineCollection({
       name: z.string(),
       group: z.enum(['classes', 'parties']),
       /** Leave empty for "every program". */
-      program: reference('programs').optional(),
+      program: blank(reference('programs')),
       pricePrefix: z.string().default(''),
       price: z.number().nonnegative(),
       priceSuffix: z.string().default(''),
