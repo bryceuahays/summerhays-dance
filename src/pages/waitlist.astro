@@ -1,0 +1,54 @@
+---
+// Pre-launch landing page; after launch it becomes the email list signup.
+import Base from '../layouts/Base.astro';
+import SignupForm from '../components/SignupForm.astro';
+import { getSite } from '../lib/site';
+import { getPage } from '../lib/content';
+
+const site = await getSite();
+const page = (await getPage('waitlist')).data;
+const heading = site.prelaunch ? page.heading : page.launchedHeading;
+const text = site.prelaunch ? page.text : page.launchedText;
+---
+
+<Base title={site.prelaunch ? page.title : page.launchedHeading} description={page.description}>
+  <section class="section waitlist">
+    <div class="container waitlist__inner">
+      <h1>{heading}</h1>
+      <p class="lede">{text}</p>
+      <div class="waitlist__card">
+        <SignupForm id="waitlist" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .waitlist {
+    background: var(--blush);
+    min-height: min(80svh, 860px);
+  }
+
+  .waitlist__inner {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+    max-width: calc(720px + var(--gutter) * 2);
+    text-align: center;
+  }
+
+  .waitlist__card {
+    width: 100%;
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    background: var(--cream);
+    border-radius: var(--radius-card);
+    text-align: left;
+  }
+
+  @media (min-width: 768px) {
+    .waitlist__card {
+      padding: var(--space-4);
+    }
+  }
+</style>

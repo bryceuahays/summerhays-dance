@@ -1,0 +1,146 @@
+---
+// Shared layout for the two program pages (Dance Again, Teen Studio). Each
+// section shows only when the program's content file has it.
+import { render } from 'astro:content';
+import Base from './Base.astro';
+import Hero from '../components/Hero.astro';
+import PointGrid from '../components/PointGrid.astro';
+import LevelPicker from '../components/LevelPicker.astro';
+import SectionIntro from '../components/SectionIntro.astro';
+import ScheduleTable from '../components/ScheduleTable.astro';
+import PricingCards from '../components/PricingCards.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { bookAction, getSite, url } from '../lib/site';
+import { getFaqs, getPricing, getProgram, getSchedule } from '../lib/content';
+
+interface Props {
+  programId: string;
+}
+
+const { programId } = Astro.props;
+const site = await getSite();
+const program = await getProgram(programId);
+const p = program.data;
+const { Content } = await render(program);
+const classes = await getSchedule(programId);
+const prices = p.pricing ? await getPricing('classes', programId) : [];
+const faqs = p.faq ? await getFaqs(p.faq.topics) : [];
+---
+
+<Base title={p.title} description={p.description} overHero>
+  <Hero hero={p.hero} primary={bookAction(site, p.hero.primaryLabel)} size="short" />
+
+  <section class="section">
+    <div class="container program-intro reveal">
+      <Content />
+    </div>
+  </section>
+
+  {
+    p.whoFor && (
+      <section class="section section--blush">
+        <div class="container">
+          <PointGrid list={p.whoFor} variant="cards" />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    p.different && (
+      <section class="section section--blush">
+        <div class="container">
+          <PointGrid list={p.different} variant="cards" />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    p.levels && (
+      <section class="section">
+        <div class="container">
+          <LevelPicker levels={p.levels} href="#schedule" />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    p.sessionFormat && (
+      <section class="section section--sand">
+        <div class="container">
+          <PointGrid list={p.sessionFormat} variant="steps" />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    p.parents && (
+      <section class="section" id="parents">
+        <div class="container">
+          <PointGrid list={p.parents} variant="list">
+            <p class="program-policy">
+              <a href={url('/policies#minors-safety-policy')}>
+                {p.parents.policyLinkLabel}
+                <span aria-hidden="true"> →</span>
+              </a>
+            </p>
+          </PointGrid>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--blush" id="schedule">
+    <div class="container">
+      <SectionIntro heading={p.schedule.heading} intro={p.schedule.intro} />
+      <ScheduleTable classes={classes} caption={p.schedule.heading} />
+    </div>
+  </section>
+
+  {
+    p.pricing && prices.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <SectionIntro heading={p.pricing.heading} intro={p.pricing.intro} />
+          <PricingCards cards={prices} action={bookAction(site)} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    p.faq && faqs.length > 0 && (
+      <section class="section section--sand">
+        <div class="container">
+          <FaqAccordion heading={p.faq.heading} faqs={faqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand cta={p.cta} action={bookAction(site, p.cta.buttonLabel)} />
+</Base>
+
+<style>
+  .program-intro {
+    max-width: 46rem;
+    font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .program-policy {
+    margin-top: var(--space-4);
+  }
+
+  .program-policy a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 700;
+  }
+</style>

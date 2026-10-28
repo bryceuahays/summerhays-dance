@@ -1,0 +1,118 @@
+---
+// Plain-text policies from pages/policies.md. Each ## heading gets an anchor
+// (e.g. /policies#minors-safety-policy) and a link in the list at the top.
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getPage } from '../lib/content';
+
+const entry = await getPage('policies');
+const page = entry.data;
+const { Content, headings } = await render(entry);
+const sections = headings.filter((h) => h.depth === 2);
+---
+
+<Base title={page.title} description={page.description}>
+  <PageHeader heading={page.heading} intro={page.intro}>
+    <p class="policies-updated">{page.updated}</p>
+  </PageHeader>
+
+  <section class="section">
+    <div class="container policies">
+      {
+        sections.length > 0 && (
+          <nav class="policies__toc" aria-label={page.heading}>
+            <ul role="list">
+              {sections.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+      <div class="policies__body">
+        <Content />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .policies-updated {
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+
+  .policies {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .policies__toc ul {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--sand);
+  }
+
+  .policies__toc a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    border-bottom: 1px solid var(--sand);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .policies__body {
+    max-width: 68ch;
+  }
+
+  .policies__body :global(h2) {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .policies__body :global(h2:first-child),
+  .policies__body :global(blockquote + h2) {
+    margin-top: var(--space-4);
+  }
+
+  .policies__body :global(h3) {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-1);
+  }
+
+  .policies__body :global(p),
+  .policies__body :global(ul),
+  .policies__body :global(ol) {
+    margin-bottom: var(--space-2);
+  }
+
+  .policies__body :global(blockquote) {
+    padding: var(--space-2) var(--space-3);
+    background: var(--blush);
+    border-left: 4px solid var(--plum);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .policies__body :global(blockquote p) {
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .policies {
+      grid-template-columns: 1fr 2.4fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .policies__toc {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-3));
+    }
+  }
+</style>

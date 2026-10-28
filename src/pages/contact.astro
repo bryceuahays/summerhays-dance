@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactForm from '../components/ContactForm.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { getSite } from '../lib/site';
+import { getPage } from '../lib/content';
+
+const site = await getSite();
+const page = (await getPage('contact')).data;
+const hasSocial = Object.values(site.social).some(Boolean);
+---
+
+<Base title={page.title} description={page.description}>
+  <PageHeader heading={page.heading} intro={page.intro} />
+
+  <section class="section">
+    <div class="container contact">
+      <div class="contact__form">
+        <h2>{page.form.heading}</h2>
+        <ContactForm form={page.form} />
+      </div>
+
+      <aside class="contact__aside">
+        <div class="contact__block">
+          <h2 class="contact__h">{page.details.heading}</h2>
+          <dl>
+            <div>
+              <dt>{page.details.emailLabel}</dt>
+              <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            </div>
+            {
+              site.phone && (
+                <div>
+                  <dt>{page.details.phoneLabel}</dt>
+                  <dd>
+                    <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}>{site.phone}</a>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              hasSocial && (
+                <div>
+                  <dt>{page.details.socialLabel}</dt>
+                  <dd class="contact__social">
+                    <SocialLinks social={site.social} />
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+
+        <div class="contact__block">
+          <h2 class="contact__h">{page.where.heading}</h2>
+          <p>{page.where.text}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .contact__form {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .contact__aside {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .contact__block {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--blush);
+    border-radius: var(--radius-card);
+  }
+
+  .contact__h {
+    font-size: 1.75rem;
+  }
+
+  dl {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  dt {
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--plum);
+  }
+
+  dd a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  /* Social icons are cream-on-plum circles built for the footer */
+  .contact__social {
+    color: var(--plum);
+  }
+
+  @media (min-width: 1024px) {
+    .contact {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

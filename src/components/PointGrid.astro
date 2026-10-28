@@ -92,9 +92,18 @@ const Tag = variant === 'steps' ? 'ol' : 'ul';
       grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
       gap: var(--space-4);
     }
+
+    /* Four or more steps go two by two until there's room for a row */
+    .points--steps:has(> :nth-child(4)) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (min-width: 1024px) {
+    .points--steps:has(> :nth-child(4):last-child) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
     .points--cards:has(> :nth-child(3):last-child) {
       grid-template-columns: repeat(3, 1fr);
     }

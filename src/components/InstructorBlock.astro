@@ -19,7 +19,7 @@ interface Props {
 const { portrait, heading, eyebrow, bio, credentials, link, as: Heading = 'h2' } = Astro.props;
 ---
 
-<div class="instructor">
+<div class:list={["instructor", { "instructor--full": credentials || Astro.slots.has("default") }]}>
   <div class="instructor__portrait reveal">
     <Photo photo={portrait} ratio="4 / 5" sizes="(min-width: 768px) 45vw, 100vw" />
   </div>
@@ -56,6 +56,10 @@ const { portrait, heading, eyebrow, bio, credentials, link, as: Heading = 'h2' }
     display: grid;
     gap: var(--space-4);
     align-items: center;
+  }
+
+  .instructor--full {
+    align-items: start;
   }
 
   .instructor__body {

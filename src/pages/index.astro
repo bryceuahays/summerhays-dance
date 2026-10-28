@@ -1,57 +1,64 @@
 ---
-// Pass 1 scaffold: a stand-in home page so the layout, header, footer and
-// offer bar can be reviewed. Pass 4 replaces it with the real home page.
 import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import TwoDoors from '../components/TwoDoors.astro';
+import StyleTiles from '../components/StyleTiles.astro';
+import PointGrid from '../components/PointGrid.astro';
+import InstructorBlock from '../components/InstructorBlock.astro';
+import Testimonials from '../components/Testimonials.astro';
+import SignupBand from '../components/SignupBand.astro';
 import { bookAction, getSite } from '../lib/site';
+import { getPage, getProgram, getTestimonials } from '../lib/content';
 
 const site = await getSite();
-const book = bookAction(site);
+const home = (await getPage('home')).data;
+const about = (await getPage('about')).data;
+const programs = [await getProgram('dance-again'), await getProgram('teens')];
+const quotes = await getTestimonials();
 ---
 
-<Base overHero>
-  <section class="section scaffold-hero on-dark">
-    <div class="container stack">
-      <p class="eyebrow">{site.city}, {site.state}</p>
-      <h1>{site.name}</h1>
-      <p class="scaffold-hero__lede">{site.positioning}</p>
-      <div class="btn-row">
-        <a class="btn" href={book.href}>{book.label}</a>
-      </div>
-    </div>
-  </section>
+<Base description={home.description} overHero>
+  <Hero hero={home.hero} primary={bookAction(site, home.hero.primaryLabel)} />
 
   <section class="section">
-    <div class="container reveal">
-      <div class="placeholder scaffold-photo">PHOTO: class in motion (pass 4)</div>
+    <div class="container">
+      <TwoDoors heading={home.doors.heading} programs={programs} />
     </div>
   </section>
 
   <section class="section section--blush">
-    <div class="container reveal">
-      <div class="placeholder">PHOTO: Brielle teaching (pass 4)</div>
+    <div class="container">
+      <StyleTiles heading={home.styles.heading} items={home.styles.items} />
     </div>
   </section>
+
+  <section class="section section--sand">
+    <div class="container">
+      <PointGrid list={home.howItWorks} variant="steps" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <InstructorBlock
+        portrait={about.portrait}
+        eyebrow={home.meetInstructor.eyebrow}
+        heading={home.meetInstructor.heading}
+        bio={about.shortBio}
+        link={{ href: '/about', label: home.meetInstructor.linkLabel }}
+      />
+    </div>
+  </section>
+
+  {
+    quotes.length > 0 && (
+      <section class="section section--sand">
+        <div class="container">
+          <Testimonials heading={home.testimonials.heading} quotes={quotes} />
+        </div>
+      </section>
+    )
+  }
+
+  <SignupBand />
 </Base>
-
-<style>
-  .scaffold-hero {
-    background: var(--plum-deep);
-    color: var(--cream);
-    min-height: min(80vh, 720px);
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .scaffold-hero .eyebrow {
-    color: var(--blush);
-  }
-
-  .scaffold-hero__lede {
-    font-size: 1.25rem;
-    max-width: 36ch;
-  }
-
-  .scaffold-photo {
-    min-height: 360px;
-  }
-</style>

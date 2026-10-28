@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PricingCards from '../components/PricingCards.astro';
+import SectionIntro from '../components/SectionIntro.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import { getPage, getPricing } from '../lib/content';
+
+const page = (await getPage('parties')).data;
+const cards = await getPricing('parties');
+---
+
+<Base title={page.title} description={page.description}>
+  <PageHeader heading={page.heading} intro={page.intro} />
+
+  <section class="section">
+    <div class="container">
+      <PricingCards cards={cards} action={{ href: '#inquiry-form', label: page.form.submitLabel }} />
+    </div>
+  </section>
+
+  <section class="section section--blush" id="inquiry-form">
+    <div class="container parties-form">
+      <SectionIntro heading={page.form.heading} intro={page.form.intro} />
+      <div class="parties-form__card">
+        <InquiryForm form={page.form} />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .parties-form {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .parties-form__card {
+    padding: var(--space-3);
+    background: var(--cream);
+    border-radius: var(--radius-card);
+  }
+
+  @media (min-width: 768px) {
+    .parties-form__card {
+      padding: var(--space-4);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .parties-form {
+      grid-template-columns: 4fr 7fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+</style>

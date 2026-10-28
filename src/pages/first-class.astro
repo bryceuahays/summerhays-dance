@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Timeline from '../components/Timeline.astro';
+import PointGrid from '../components/PointGrid.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { bookAction, getSite } from '../lib/site';
+import { getFaqs, getPage } from '../lib/content';
+
+const site = await getSite();
+const page = (await getPage('firstClass')).data;
+const faqs = await getFaqs();
+---
+
+<Base title={page.title} description={page.description}>
+  <PageHeader heading={page.heading} intro={page.intro} />
+
+  <section class="section">
+    <div class="container">
+      <Timeline timeline={page.timeline} />
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container">
+      <PointGrid list={page.wear} variant="list" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <PointGrid list={page.arrival} variant="cards" />
+    </div>
+  </section>
+
+  <section class="section section--blush">
+    <div class="container first-access reveal">
+      <h2>{page.accessibility.heading}</h2>
+      <p>{page.accessibility.text}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <FaqAccordion heading={page.faqHeading} faqs={faqs} />
+    </div>
+  </section>
+
+  <CtaBand cta={page.cta} action={bookAction(site, page.cta.buttonLabel)} />
+</Base>
+
+<style>
+  .first-access {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .first-access p {
+    max-width: 62ch;
+    font-size: 1.0625em;
+  }
+</style>

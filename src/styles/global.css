@@ -234,6 +234,11 @@ a:hover {
   text-align: center;
 }
 
+/* Keep placeholders visible on sand sections */
+.section--sand .placeholder {
+  background: color-mix(in srgb, var(--sand) 55%, var(--cream));
+}
+
 /* Photos and their placeholders share one shape */
 .photo {
   width: 100%;

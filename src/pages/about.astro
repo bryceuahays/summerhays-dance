@@ -1,0 +1,47 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import InstructorBlock from '../components/InstructorBlock.astro';
+import PointGrid from '../components/PointGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { bookAction, getSite } from '../lib/site';
+import { getPage } from '../lib/content';
+
+const site = await getSite();
+const entry = await getPage('about');
+const page = entry.data;
+const { Content } = await render(entry);
+---
+
+<Base title={page.title} description={page.description}>
+  <section class="section">
+    <div class="container">
+      <InstructorBlock
+        portrait={page.portrait}
+        heading={page.heading}
+        bio={page.shortBio}
+        credentials={page.credentials}
+        as="h1"
+      >
+        <div class="about-story">
+          <Content />
+        </div>
+      </InstructorBlock>
+    </div>
+  </section>
+
+  <section class="section section--blush">
+    <div class="container">
+      <PointGrid list={page.values} variant="cards" />
+    </div>
+  </section>
+
+  <CtaBand cta={page.cta} action={bookAction(site, page.cta.buttonLabel)} />
+</Base>
+
+<style>
+  .about-story {
+    display: grid;
+    gap: var(--space-2);
+  }
+</style>
