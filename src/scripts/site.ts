@@ -1,5 +1,7 @@
 // Site-wide behavior: solid header on scroll, mobile menu, fade-up on scroll.
 
+import './forms';
+
 const header = document.querySelector<HTMLElement>('[data-header]');
 const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
 const nav = document.getElementById('site-nav');

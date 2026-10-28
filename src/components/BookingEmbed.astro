@@ -1,0 +1,90 @@
+---
+// The booking tool's own schedule, booking and payment widget, pasted into
+// site.yaml as booking.embedCode. It is kept in a <template> and only added
+// to the page as it nears the screen, so it never slows the first paint.
+// We never build checkout ourselves; this is the booking tool's code.
+import { getSite } from '../lib/site';
+
+interface Props {
+  /** Text for the link to the booking tool's own page. */
+  fallbackLabel: string;
+}
+
+const { fallbackLabel } = Astro.props;
+const site = await getSite();
+const { embedCode, url: bookingUrl } = site.booking;
+---
+
+<div class="booking">
+  {
+    embedCode && (
+      <div class="booking__frame" data-booking-embed>
+        <template set:html={embedCode} />
+      </div>
+    )
+  }
+  {
+    bookingUrl && (
+      <p class="booking__fallback">
+        <a class="btn btn--secondary" href={bookingUrl} target="_blank" rel="noopener">
+          {fallbackLabel}
+        </a>
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .booking {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .booking__frame {
+    min-height: 480px;
+    background: #fff;
+    border: 1px solid var(--sand);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .booking__frame :global(iframe) {
+    display: block;
+    width: 100%;
+    min-height: 720px;
+    border: 0;
+  }
+</style>
+
+<script>
+  // Copy the template's contents into the page when it is about to scroll
+  // into view. Scripts added through innerHTML don't run, so each one is
+  // recreated so the booking tool's loader runs normally.
+  function mount(holder: HTMLElement) {
+    const template = holder.querySelector('template');
+    if (!template) return;
+    const content = template.content.cloneNode(true) as DocumentFragment;
+    content.querySelectorAll('script').forEach((old) => {
+      const script = document.createElement('script');
+      for (const attr of old.attributes) script.setAttribute(attr.name, attr.value);
+      script.textContent = old.textContent;
+      old.replaceWith(script);
+    });
+    content.querySelectorAll('iframe').forEach((frame) => frame.setAttribute('loading', 'lazy'));
+    template.replaceWith(content);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-booking-embed]').forEach((holder) => {
+    if (!('IntersectionObserver' in window)) return mount(holder);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          observer.disconnect();
+          mount(holder);
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    observer.observe(holder);
+  });
+</script>

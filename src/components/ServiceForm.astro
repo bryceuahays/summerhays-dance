@@ -1,7 +1,7 @@
 ---
 // Wrapper for every form that posts to the outside form or email service.
 // The action address comes from site.yaml; the hidden honeypot field catches
-// spam bots. Pass 5 adds the no-reload thank-you message.
+// spam bots. src/scripts/forms.ts sends it and shows the thank-you message.
 import { getSite } from '../lib/site';
 
 interface Props {
@@ -35,10 +35,10 @@ const site = await getSite();
     <button class="btn" type="submit">{submitLabel}</button>
   </div>
 
-  <p class="service-form__status service-form__status--ok" role="status" data-form-success hidden>
+  <p class="service-form__status service-form__status--ok" role="status" tabindex="-1" data-form-success hidden>
     {successMessage}
   </p>
-  <p class="service-form__status service-form__status--error" role="alert" data-form-error hidden>
+  <p class="service-form__status service-form__status--error" role="alert" tabindex="-1" data-form-error hidden>
     {site.formErrorMessage}
   </p>
 </form>

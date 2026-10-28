@@ -87,19 +87,33 @@ social:
   facebook: ""
   youtube: ""
 
-# Booking tool (Momence or OfferingTree). Filled in during pass 5.
+# Booking tool (Momence or OfferingTree).
+# url: the booking tool's own schedule page, used as the "Open the schedule" link.
+# embedCode: the embed snippet from the booking tool, pasted exactly as given.
+# Leave both empty until the account exists.
 booking:
   url: ""
   embedCode: ""
 
-# Form service and email tool addresses. Filled in during pass 5.
+# Where forms send. Paste the form address from the service, e.g.
+# https://formspree.io/f/abcdwxyz for the contact and inquiry forms, and the
+# email tool's form address for signups. Empty means "not connected yet".
 forms:
   contactAction: ""
   inquiryAction: ""
   emailSignupAction: ""
+  # The names your email tool expects for each field. Kit, for example, uses
+  # first_name and email_address; Mailchimp uses FNAME and EMAIL.
+  signupFieldNames:
+    firstName: firstName
+    email: email
+    interest: interest
 
-# Cookie-free analytics (Plausible or Cloudflare Web Analytics). Off by default.
+# Cookie-free analytics. Off by default. For Plausible, fill in scriptSrc
+# (https://plausible.io/js/script.js) and dataDomain (your domain). For
+# Cloudflare Web Analytics, fill in cloudflareToken only.
 analytics:
   enabled: false
   scriptSrc: ""
   dataDomain: ""
+  cloudflareToken: ""

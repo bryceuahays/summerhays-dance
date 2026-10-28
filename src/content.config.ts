@@ -140,11 +140,21 @@ const site = defineCollection({
         contactAction: z.string().default(''),
         inquiryAction: z.string().default(''),
         emailSignupAction: z.string().default(''),
+        /** Field names the email tool expects, e.g. Kit uses email_address and first_name. */
+        signupFieldNames: z
+          .object({
+            firstName: z.string().default('firstName'),
+            email: z.string().default('email'),
+            interest: z.string().default('interest'),
+          })
+          .default({ firstName: 'firstName', email: 'email', interest: 'interest' }),
       }),
       analytics: z.object({
         enabled: z.boolean().default(false),
         scriptSrc: z.string().default(''),
         dataDomain: z.string().default(''),
+        /** Cloudflare Web Analytics token, if using Cloudflare instead of Plausible. */
+        cloudflareToken: z.string().default(''),
       }),
     }),
 });

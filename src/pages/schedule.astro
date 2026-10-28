@@ -1,13 +1,14 @@
 ---
 // Before launch: waitlist form in place of the schedule. After launch: the
-// class list with a link to the booking tool (pass 5 swaps in the live
-// booking embed), then pricing either way.
+// booking tool's live embed (or, until it exists, the class list), with a
+// link to the booking tool's own page. Pricing shows either way.
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import SectionIntro from '../components/SectionIntro.astro';
 import ScheduleTable from '../components/ScheduleTable.astro';
 import PricingCards from '../components/PricingCards.astro';
 import SignupForm from '../components/SignupForm.astro';
+import BookingEmbed from '../components/BookingEmbed.astro';
 import { bookAction, getSite } from '../lib/site';
 import { getPage, getPricing, getSchedule } from '../lib/content';
 
@@ -33,14 +34,10 @@ const prices = await getPricing('classes');
     ) : (
       <section class="section" id="schedule">
         <div class="container">
-          <ScheduleTable classes={classes} caption={page.heading} />
-          {site.booking.url && (
-            <p class="schedule-fallback">
-              <a class="btn btn--secondary" href={site.booking.url} target="_blank" rel="noopener">
-                {page.fallbackLinkLabel}
-              </a>
-            </p>
-          )}
+          {!site.booking.embedCode && <ScheduleTable classes={classes} caption={page.heading} />}
+          <div class="schedule-booking">
+            <BookingEmbed fallbackLabel={page.fallbackLinkLabel} />
+          </div>
         </div>
       </section>
     )
@@ -68,7 +65,7 @@ const prices = await getPricing('classes');
     border-radius: var(--radius-card);
   }
 
-  .schedule-fallback {
+  .schedule-booking {
     margin-top: var(--space-4);
   }
 

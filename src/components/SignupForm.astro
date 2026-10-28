@@ -13,6 +13,7 @@ interface Props {
 const { id } = Astro.props;
 const site = await getSite();
 const s = site.signup;
+const names = site.forms.signupFieldNames;
 ---
 
 <ServiceForm
@@ -23,10 +24,10 @@ const s = site.signup;
   class="signup"
 >
   <div class="signup__row">
-    <FormField id={`signup-${id}-name`} name="firstName" field={{ label: s.firstNameLabel }} autocomplete="given-name" />
+    <FormField id={`signup-${id}-name`} name={names.firstName} field={{ label: s.firstNameLabel }} autocomplete="given-name" />
     <FormField
       id={`signup-${id}-email`}
-      name="email"
+      name={names.email}
       type="email"
       field={{ label: s.emailLabel }}
       autocomplete="email"
@@ -40,7 +41,7 @@ const s = site.signup;
       {
         s.interestOptions.map((option, i) => (
           <label class="signup__option">
-            <input type="radio" name="interest" value={option} checked={i === s.interestOptions.length - 1} />
+            <input type="radio" name={names.interest} value={option} checked={i === s.interestOptions.length - 1} />
             <span>{option}</span>
           </label>
         ))

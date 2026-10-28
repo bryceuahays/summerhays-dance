@@ -3,7 +3,9 @@ import '../styles/global.css';
 import IntroOfferBar from '../components/IntroOfferBar.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getImage } from 'astro:assets';
 import { getSite, url } from '../lib/site';
+import { getPage } from '../lib/content';
 
 interface Props {
   /** Page title; the home page leaves it out and uses the business name. */
@@ -18,6 +20,13 @@ const site = await getSite();
 const { title, description = site.description, overHero = false, noindex = false } = Astro.props;
 const pageTitle = title ? `${title} | ${site.name}` : site.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Share image: the one set in site.yaml, else the home hero photo once it exists.
+const shareSource = site.socialImage ?? (await getPage('home')).data.hero.photo.src;
+const shareImage = shareSource
+  ? new URL((await getImage({ src: shareSource, width: 1200, height: 630, fit: 'cover', format: 'jpg' })).src, Astro.site)
+  : undefined;
+const analytics = site.analytics;
 ---
 
 <!doctype html>
@@ -38,6 +47,26 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    {shareImage && <meta property="og:image" content={shareImage} />}
+    {shareImage && <meta property="og:image:width" content="1200" />}
+    {shareImage && <meta property="og:image:height" content="630" />}
+    <meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
+
+    {
+      analytics.enabled && analytics.cloudflareToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: analytics.cloudflareToken })}
+        />
+      )
+    }
+    {
+      analytics.enabled && !analytics.cloudflareToken && analytics.scriptSrc && (
+        <script is:inline defer src={analytics.scriptSrc} data-domain={analytics.dataDomain || undefined} />
+      )
+    }
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

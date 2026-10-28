@@ -7,7 +7,7 @@ import PointGrid from '../components/PointGrid.astro';
 import InstructorBlock from '../components/InstructorBlock.astro';
 import Testimonials from '../components/Testimonials.astro';
 import SignupBand from '../components/SignupBand.astro';
-import { bookAction, getSite } from '../lib/site';
+import { bookAction, getSite, url } from '../lib/site';
 import { getPage, getProgram, getTestimonials } from '../lib/content';
 
 const site = await getSite();
@@ -15,9 +15,33 @@ const home = (await getPage('home')).data;
 const about = (await getPage('about')).data;
 const programs = [await getProgram('dance-again'), await getProgram('teens')];
 const quotes = await getTestimonials();
+
+// LocalBusiness details for Google. Placeholders in [square brackets] are left
+// out, so nothing unfinished is published. Keep the name and area identical to
+// the Google Business Profile.
+const known = (value: string) => (value && !value.includes('[') ? value : undefined);
+const city = known(site.city);
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: site.name,
+  description: known(site.description),
+  url: new URL(url('/'), Astro.site).href,
+  email: known(site.email),
+  telephone: known(site.phone),
+  areaServed: city ? `${city}, ${site.state}` : site.state,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: city,
+    addressRegion: site.state,
+    addressCountry: 'US',
+  },
+  sameAs: Object.values(site.social).filter(Boolean),
+};
 ---
 
 <Base description={home.description} overHero>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(localBusiness)} />
   <Hero hero={home.hero} primary={bookAction(site, home.hero.primaryLabel)} />
 
   <section class="section">

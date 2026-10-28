@@ -34,14 +34,30 @@ const year = new Date().getFullYear();
       class="site-footer__signup"
       action={site.forms.emailSignupAction || undefined}
       method="post"
-      data-signup
+      data-service-form
     >
       <label class="site-footer__signup-heading" for="footer-email">{site.signup.heading}</label>
       <div class="site-footer__signup-row">
-        <input id="footer-email" name="email" type="email" autocomplete="email" required />
+        <input
+          id="footer-email"
+          name={site.forms.signupFieldNames.email}
+          type="email"
+          autocomplete="email"
+          required
+        />
         <button class="btn" type="submit">{site.signup.buttonLabel}</button>
       </div>
       {site.signup.note && <p class="site-footer__note">{site.signup.note}</p>}
+      <div class="site-footer__trap" aria-hidden="true">
+        <label for="footer-trap">{site.ui.honeypot}</label>
+        <input id="footer-trap" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <p class="site-footer__status" role="status" tabindex="-1" data-form-success hidden>
+        {site.signup.successMessage}
+      </p>
+      <p class="site-footer__status" role="alert" tabindex="-1" data-form-error hidden>
+        {site.formErrorMessage}
+      </p>
     </form>
   </div>
 
@@ -135,6 +151,21 @@ const year = new Date().getFullYear();
   .site-footer__note {
     font-size: var(--text-small);
     opacity: 0.85;
+  }
+
+  .site-footer__trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .site-footer__status {
+    padding: var(--space-2);
+    border-radius: 12px;
+    background: rgb(250 246 241 / 0.12);
+    font-weight: 600;
   }
 
   .site-footer__base {
