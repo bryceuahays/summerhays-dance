@@ -81,7 +81,7 @@ h3 {
   font-weight: 600;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--plum);
+  color: var(--teal);
 }
 
 .lede {
@@ -91,19 +91,19 @@ h3 {
 }
 
 a {
-  color: var(--plum);
+  color: var(--teal);
   text-underline-offset: 0.18em;
   text-decoration-thickness: 1px;
 }
 
 a:hover {
-  color: var(--plum-deep);
+  color: var(--teal-deep);
   text-decoration-thickness: 2px;
 }
 
-/* Focus: always visible, plum on light, cream on dark */
+/* Focus: always visible, teal on light, cream on dark */
 :focus-visible {
-  outline: 3px solid var(--plum);
+  outline: 3px solid var(--teal);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -124,8 +124,8 @@ a:hover {
   padding-block: var(--section-pad);
 }
 
-.section--blush {
-  background: var(--blush);
+.section--mist {
+  background: var(--mist);
 }
 
 .section--sand {
@@ -133,7 +133,7 @@ a:hover {
 }
 
 .section--dark {
-  background: var(--plum-deep);
+  background: var(--teal-deep);
   color: var(--cream);
 }
 
@@ -154,9 +154,9 @@ a:hover {
   gap: var(--space-1);
   min-height: var(--tap);
   padding: 12px 28px;
-  border: 2px solid var(--plum);
+  border: 2px solid var(--teal);
   border-radius: var(--radius-pill);
-  background: var(--plum);
+  background: var(--teal);
   color: var(--cream);
   font-weight: 700;
   font-size: 1rem;
@@ -171,33 +171,33 @@ a:hover {
 }
 
 .btn:hover {
-  background: var(--plum-deep);
-  border-color: var(--plum-deep);
+  background: var(--teal-deep);
+  border-color: var(--teal-deep);
   color: var(--cream);
   text-decoration: none;
 }
 
 .btn--secondary {
   background: transparent;
-  color: var(--plum);
+  color: var(--teal);
 }
 
 .btn--secondary:hover {
-  background: var(--plum);
-  border-color: var(--plum);
+  background: var(--teal);
+  border-color: var(--teal);
 }
 
 /* On dark bands the primary flips to cream so it stays visible */
 .on-dark .btn {
   background: var(--cream);
   border-color: var(--cream);
-  color: var(--plum-deep);
+  color: var(--teal-deep);
 }
 
 .on-dark .btn:hover {
-  background: var(--blush);
-  border-color: var(--blush);
-  color: var(--plum-deep);
+  background: var(--mist);
+  border-color: var(--mist);
+  color: var(--teal-deep);
 }
 
 .on-dark .btn--secondary {
@@ -207,7 +207,7 @@ a:hover {
 
 .on-dark .btn--secondary:hover {
   background: var(--cream);
-  color: var(--plum-deep);
+  color: var(--teal-deep);
 }
 
 .btn-row {
@@ -293,7 +293,7 @@ a:hover {
   z-index: 100;
   padding: 12px 20px;
   border-radius: var(--radius-pill);
-  background: var(--plum);
+  background: var(--teal);
   color: var(--cream);
   font-weight: 700;
   transform: translateY(-200%);

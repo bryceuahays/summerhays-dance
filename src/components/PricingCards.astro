@@ -1,6 +1,6 @@
 ---
 // Price cards from src/content/pricing. The highlighted card (the intro
-// offer) is plum so it reads first.
+// offer) is teal so it reads first.
 import type { CollectionEntry } from 'astro:content';
 import Photo from './Photo.astro';
 import { formatPrice } from '../lib/content';
@@ -74,8 +74,8 @@ const { cards, action } = Astro.props;
   }
 
   .price--highlight {
-    background: var(--plum);
-    border-color: var(--plum);
+    background: var(--teal);
+    border-color: var(--teal);
     color: var(--cream);
   }
 
@@ -95,7 +95,7 @@ const { cards, action } = Astro.props;
     align-self: flex-start;
     padding: 4px 12px;
     border-radius: var(--radius-pill);
-    background: var(--plum);
+    background: var(--teal);
     color: var(--cream);
     font-size: var(--text-label);
     font-weight: 700;
@@ -105,7 +105,7 @@ const { cards, action } = Astro.props;
 
   .price--highlight .price__badge {
     background: var(--cream);
-    color: var(--plum-deep);
+    color: var(--teal-deep);
   }
 
   .price__name {
@@ -132,7 +132,7 @@ const { cards, action } = Astro.props;
 
   .price--highlight .price__unit,
   .price--highlight .price__summary {
-    color: var(--blush);
+    color: var(--mist);
   }
 
   .price__summary {
@@ -160,7 +160,7 @@ const { cards, action } = Astro.props;
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
-    color: var(--plum);
+    color: var(--teal);
   }
 
   .price--highlight .price__includes svg {

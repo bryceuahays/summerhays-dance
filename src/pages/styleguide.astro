@@ -41,11 +41,11 @@ const sampleQuotes = (await getCollection('testimonials')).sort((a, b) => a.data
 
 const swatches = [
   ['--cream', '#FAF6F1', 'Page background'],
-  ['--ink', '#1F1A1E', 'Body text, headlines'],
-  ['--muted', '#6B6168', 'Secondary text'],
-  ['--plum', '#5B2350', 'Buttons, links, highlights'],
-  ['--plum-deep', '#3D1636', 'Hover, dark bands, offer bar'],
-  ['--blush', '#F1E6EE', 'Tinted sections'],
+  ['--ink', '#182224', 'Body text, headlines'],
+  ['--muted', '#566467', 'Secondary text'],
+  ['--teal', '#0B6B78', 'Buttons, links, highlights'],
+  ['--teal-deep', '#06434D', 'Hover, dark bands, offer bar'],
+  ['--mist', '#E2F1F2', 'Tinted sections'],
   ['--sand', '#EADFD2', 'Alternate sections, borders'],
 ];
 
@@ -117,7 +117,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
         <h3>Heading 3 · DM Sans 700</h3>
         <p>
           Body · DM Sans 400 at 17px on phones and 18px on desktop, line-height 1.6. <a href="#tokens"
-            >Links are plum</a
+            >Links are teal</a
           > and underlined.
         </p>
       </div>
@@ -163,7 +163,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
   <!-- Level picker -->
   {
     danceAgain.data.levels && (
-      <section class="section section--blush" id="levels">
+      <section class="section section--mist" id="levels">
         <div class="container">
           <p class="sg-label">{n('levels')} · Level picker</p>
           <LevelPicker levels={danceAgain.data.levels} href="#schedule" />
@@ -199,7 +199,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
   </section>
 
   <!-- Schedule -->
-  <section class="section section--blush" id="schedule">
+  <section class="section section--mist" id="schedule">
     <div class="container sg-stack-lg">
       <p class="sg-label">{n('schedule')} · Schedule preview, booking mode</p>
       <div>
@@ -222,7 +222,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
   </section>
 
   <!-- Testimonials -->
-  <section class="section section--blush" id="testimonials">
+  <section class="section section--mist" id="testimonials">
     <div class="container">
       <p class="sg-label">
         {n('testimonials')} · Testimonials (placeholder quotes; hidden on real pages until published)
@@ -273,7 +273,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
   </div>
 
   <!-- Forms -->
-  <section class="section section--blush" id="forms">
+  <section class="section section--mist" id="forms">
     <div class="container sg-forms">
       <div>
         <p class="sg-label">{n('forms')} · Inquiry form (Parties)</p>
@@ -355,7 +355,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
   .sg-swatch {
     height: 72px;
     margin-bottom: var(--space-1);
-    border: 1px solid rgb(31 26 30 / 0.12);
+    border: 1px solid rgb(24 34 36 / 0.12);
     border-radius: 12px;
   }
 
@@ -375,7 +375,7 @@ const n = (id: string) => String(parts.findIndex(([p]) => p === id) + 1).padStar
 
   .sg-dark {
     padding: var(--space-3);
-    background: var(--plum-deep);
+    background: var(--teal-deep);
     border-radius: var(--radius-card);
   }
 

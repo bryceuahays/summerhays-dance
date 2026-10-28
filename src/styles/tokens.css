@@ -1,12 +1,12 @@
-/* Summerhays Dance design tokens. Plum is the only accent; text on plum is cream. */
+/* Summerhays Dance design tokens. Teal is the only accent; text on teal is cream. */
 :root {
   /* Color */
   --cream: #faf6f1;
-  --ink: #1f1a1e;
-  --muted: #6b6168;
-  --plum: #5b2350;
-  --plum-deep: #3d1636;
-  --blush: #f1e6ee;
+  --ink: #182224;
+  --muted: #566467;
+  --teal: #0b6b78;
+  --teal-deep: #06434d;
+  --mist: #e2f1f2;
   --sand: #eadfd2;
 
   /* Type */

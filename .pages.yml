@@ -199,7 +199,7 @@ content:
       - { name: priceSuffix, label: After the price, type: string, description: "e.g. per session" }
       - { name: summary, label: Summary, type: text, required: true }
       - { name: includes, label: What's included, type: string, list: true }
-      - { name: highlight, label: Highlight this card (plum), type: boolean }
+      - { name: highlight, label: Highlight this card (teal), type: boolean }
       - { name: badge, label: Badge, type: string, description: "Small label on top, e.g. New here? Start here" }
       - name: photo
         label: Photo

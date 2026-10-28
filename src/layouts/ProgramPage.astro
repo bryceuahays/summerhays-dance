@@ -39,7 +39,7 @@ const faqs = p.faq ? await getFaqs(p.faq.topics) : [];
 
   {
     p.whoFor && (
-      <section class="section section--blush">
+      <section class="section section--mist">
         <div class="container">
           <PointGrid list={p.whoFor} variant="cards" />
         </div>
@@ -49,7 +49,7 @@ const faqs = p.faq ? await getFaqs(p.faq.topics) : [];
 
   {
     p.different && (
-      <section class="section section--blush">
+      <section class="section section--mist">
         <div class="container">
           <PointGrid list={p.different} variant="cards" />
         </div>
@@ -94,7 +94,7 @@ const faqs = p.faq ? await getFaqs(p.faq.topics) : [];
     )
   }
 
-  <section class="section section--blush" id="schedule">
+  <section class="section section--mist" id="schedule">
     <div class="container">
       <SectionIntro heading={p.schedule.heading} intro={p.schedule.intro} />
       <ScheduleTable classes={classes} caption={p.schedule.heading} />

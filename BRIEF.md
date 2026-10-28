@@ -114,14 +114,14 @@ Warm, confident and grown-up: closer to Ailey Extension than to a kids' recital 
 | Token | Hex | Use |
 |---|---|---|
 | `--cream` | `#FAF6F1` | Page background |
-| `--ink` | `#1F1A1E` | Body text, headlines |
-| `--muted` | `#6B6168` | Secondary text |
-| `--plum` | `#5B2350` | Brand color: buttons, links, highlights |
-| `--plum-deep` | `#3D1636` | Hover states, dark bands, intro-offer bar |
-| `--blush` | `#F1E6EE` | Tinted section backgrounds |
+| `--ink` | `#182224` | Body text, headlines |
+| `--muted` | `#566467` | Secondary text |
+| `--teal` | `#0B6B78` | Brand color: buttons, links, highlights |
+| `--teal-deep` | `#06434D` | Hover states, dark bands, intro-offer bar |
+| `--mist` | `#E2F1F2` | Tinted section backgrounds |
 | `--sand` | `#EADFD2` | Alternate section backgrounds, card borders |
 
-Plum is the only accent. Text on plum is cream. Check every pairing for WCAG AA contrast.
+Teal is the only accent. Text on teal is cream. Check every pairing for WCAG AA contrast.
 
 ### Type (Google Fonts)
 
@@ -135,7 +135,7 @@ Plum is the only accent. Text on plum is cream. Check every pairing for WCAG AA 
 
 ### Components to build as Astro components
 
-1. **Intro-offer bar:** slim plum-deep strip above the header ("New here? 2 classes in 3 weeks for $25"); text, link and on/off are fields.
+1. **Intro-offer bar:** slim teal-deep strip above the header ("New here? 2 classes in 3 weeks for $25"); text, link and on/off are fields.
 2. **Header:** sticky; transparent over the hero, solid cream after scroll; Book button always visible.
 3. **Hero:** full-bleed video or image, headline, subline, primary and secondary buttons; visible pause button for video.
 4. **Two doors:** two large photo cards, "For adults → Dance Again" and "For teens → Teen Studio."
